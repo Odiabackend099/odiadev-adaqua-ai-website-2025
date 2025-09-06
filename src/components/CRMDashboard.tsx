@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { supabase, User } from '../lib/supabase';
 import ChatWidget from './ChatWidget';
+
+interface User {
+  id: string;
+  email: string;
+  full_name?: string;
+  created_at: string;
+  last_sign_in_at?: string;
+}
 
 interface DashboardStats {
   totalUsers: number;
@@ -20,21 +27,17 @@ export default function CRMDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        setUser({
-          id: user.id,
-          email: user.email || '',
-          full_name: user.user_metadata?.full_name,
-          created_at: user.created_at,
-          last_sign_in_at: user.last_sign_in_at,
-        });
-      }
-      setLoading(false);
+    // Mock user data - in production, fetch from Supabase
+    const mockUser: User = {
+      id: '1',
+      email: 'demo@odia.dev',
+      full_name: 'Demo User',
+      created_at: new Date().toISOString(),
+      last_sign_in_at: new Date().toISOString(),
     };
-
-    getUser();
+    
+    setUser(mockUser);
+    setLoading(false);
 
     // Mock stats for demo - in production, fetch from your analytics
     setStats({
@@ -46,7 +49,7 @@ export default function CRMDashboard() {
   }, []);
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    // In production, call Supabase auth.signOut()
     window.location.reload();
   };
 

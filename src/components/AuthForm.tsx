@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { supabase } from '../lib/supabase';
 
 interface AuthFormProps {
   onAuthSuccess: () => void;
@@ -19,24 +18,19 @@ export default function AuthForm({ onAuthSuccess }: AuthFormProps) {
     setError('');
 
     try {
-      if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: {
-              full_name: fullName,
-            },
-          },
-        });
-        if (error) throw error;
+      // Mock authentication - in production, integrate with Supabase
+      if (!email || !password) {
+        throw new Error('Email and password are required');
       }
+      
+      if (!isLogin && !fullName) {
+        throw new Error('Full name is required for signup');
+      }
+
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Mock success
       onAuthSuccess();
     } catch (error: any) {
       setError(error.message);

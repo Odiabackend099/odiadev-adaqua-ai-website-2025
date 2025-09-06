@@ -1,11 +1,29 @@
 services:
   - type: web
-    name: odiadev-site
+    name: odiadev-frontend
+    env: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_AGENT_API_URL
+        value: https://odiadev-adaqua-ai-brain.onrender.com/api/chat
+      - key: VITE_TTS_FUNCTION_URL
+        value: https://nyrvnskbkitrazudrkkc.functions.supabase.co/tts
+      - key: VITE_SITE_URL
+        value: https://odia.dev
+      - key: VITE_SUPABASE_URL
+        value: https://nyrvnskbkitrazudrkkc.supabase.co
+      - key: VITE_SUPABASE_ANON_KEY
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55cnZuc2tia2l0cmF6dWRya2tjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY3NjAwNTQsImV4cCI6MjA3MjMzNjA1NH0.4OjZqbrvXrF3N0CNpzUndh9HTKCtXiadA6NRQv98fCg
+
+  - type: web
+    name: odiadev-brain
     env: node
     buildCommand: npm install
-    startCommand: npm start
+    startCommand: npm run start
+    healthCheckPath: /health
     envVars:
-      - key: NODE_ENV
-        value: production
       - key: PORT
         value: 10000
+      - key: NODE_ENV
+        value: production

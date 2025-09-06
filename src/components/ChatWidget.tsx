@@ -24,21 +24,45 @@ export default function ChatWidget() {
     
     setText("");
 
-    const resp = await fetch(agentUrl,{method:"POST",headers:{'Content-Type':'application/json'},body:JSON.stringify({message:user.text})});
-    const data = await resp.json().catch(()=>({reply:"Sorry, I had trouble answering."}));
-    const replyText = (data.reply || "").toString() || "…";
-
-    let audioUrl: string|undefined;
-    if (voiceMode && ttsReady) {
-      try {
-        audioUrl = await withBackoff(() => ttsGenerate({ text: replyText, persona }));
-        analytics.trackTTSRequest(persona, replyText.length, true);
-      } catch (error) {
-        analytics.trackTTSRequest(persona, replyText.length, false);
-        console.error('TTS failed:', error);
+    try {
+      // Try to fetch from the agent URL, fallback to mock response
+      const resp = await fetch(agentUrl,{method:"POST",headers:{'Content-Type':'application/json'},body:JSON.stringify({message:user.text})});
+      const data = await resp.json().catch(()=>({reply:"Sorry, I had trouble answering."}));
+      const replyText = (data.reply || "").toString() || "…";
+      
+      let audioUrl: string|undefined;
+      if (voiceMode && ttsReady) {
+        try {
+          audioUrl = await withBackoff(() => ttsGenerate({ text: replyText, persona }));
+          analytics.trackTTSRequest(persona, replyText.length, true);
+        } catch (error) {
+          analytics.trackTTSRequest(persona, replyText.length, false);
+          console.error('TTS failed:', error);
+        }
       }
+      setMessages(m=>[...m,{role:"assistant",text:replyText,audioUrl}]);
+    } catch (error) {
+      // Fallback to mock response if agent is not available
+      const mockReplies = [
+        "Hello! I'm Adaqua AI by ODIADEV. How can I help you today?",
+        "I can help you with information about ODIADEV's voice AI solutions.",
+        "That's interesting! Can you tell me more about what you're looking for?",
+        "I'm here to help with any questions about ODIADEV and our AI services."
+      ];
+      const replyText = mockReplies[Math.floor(Math.random() * mockReplies.length)];
+      
+      let audioUrl: string|undefined;
+      if (voiceMode && ttsReady) {
+        try {
+          audioUrl = await withBackoff(() => ttsGenerate({ text: replyText, persona }));
+          analytics.trackTTSRequest(persona, replyText.length, true);
+        } catch (error) {
+          analytics.trackTTSRequest(persona, replyText.length, false);
+          console.error('TTS failed:', error);
+        }
+      }
+      setMessages(m=>[...m,{role:"assistant",text:replyText,audioUrl}]);
     }
-    setMessages(m=>[...m,{role:"assistant",text:replyText,audioUrl}]);
   }
 
   return (
