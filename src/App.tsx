@@ -1,15 +1,49 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import AuthForm from "./components/AuthForm";
+import AssistantWizard from "./components/AssistantWizard";
 import CRMDashboard from "./components/CRMDashboard";
 import ChatWidget from "./components/ChatWidget";
+import HealthBanner from "./components/HealthBanner";
+import { supabase, Assistant } from "./lib/supabase";
 import images from "./data/images.json";
 
 function AppContent() {
   const { user, loading } = useAuth();
+  const [assistant, setAssistant] = useState<Assistant | null>(null);
+  const [checkingAssistant, setCheckingAssistant] = useState(true);
 
-  if (loading) {
+  React.useEffect(() => {
+    const checkAssistant = async () => {
+      if (!user) {
+        setCheckingAssistant(false);
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('assistants')
+          .select('*')
+          .eq('owner_id', user.id)
+          .single();
+
+        if (error && error.code !== 'PGRST116') {
+          console.error('Error checking assistant:', error);
+        } else if (data) {
+          setAssistant(data);
+        }
+      } catch (error) {
+        console.error('Error checking assistant:', error);
+      } finally {
+        setCheckingAssistant(false);
+      }
+    };
+
+    checkAssistant();
+  }, [user]);
+
+  if (loading || checkingAssistant) {
     return (
       <div className="min-h-screen bg-[#0e2240] flex items-center justify-center">
         <div className="text-white text-xl">Loading...</div>
@@ -19,6 +53,10 @@ function AppContent() {
 
   if (!user) {
     return <AuthForm onAuthSuccess={() => window.location.reload()} />;
+  }
+
+  if (!assistant) {
+    return <AssistantWizard onComplete={setAssistant} />;
   }
 
   return (
@@ -37,6 +75,7 @@ function HomePage() {
 
   return (
     <div className="min-h-screen bg-[#0e2240] text-white">
+      <HealthBanner />
       <header className="p-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <img src={images.brand.logo.src} alt={images.brand.logo.alt} className="w-10 h-10"/>

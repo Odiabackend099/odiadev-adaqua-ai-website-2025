@@ -1,12 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-
-interface User {
-  id: string;
-  email: string;
-  full_name?: string;
-  created_at: string;
-  last_sign_in_at?: string;
-}
+import { supabase, User } from '../lib/supabase';
 
 interface AuthContextType {
   user: User | null;
@@ -21,25 +14,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Mock authentication for now - in production, integrate with Supabase
-    const mockUser: User = {
-      id: '1',
-      email: 'demo@odia.dev',
-      full_name: 'Demo User',
-      created_at: new Date().toISOString(),
-      last_sign_in_at: new Date().toISOString(),
-    };
-    
-    // Simulate loading
-    setTimeout(() => {
-      setUser(mockUser);
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUser({
+          id: user.id,
+          email: user.email || '',
+          full_name: user.user_metadata?.full_name,
+          created_at: user.created_at,
+          last_sign_in_at: user.last_sign_in_at,
+        });
+      }
       setLoading(false);
-    }, 1000);
+    };
+
+    getUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (session?.user) {
+          setUser({
+            id: session.user.id,
+            email: session.user.email || '',
+            full_name: session.user.user_metadata?.full_name,
+            created_at: session.user.created_at,
+            last_sign_in_at: session.user.last_sign_in_at,
+          });
+        } else {
+          setUser(null);
+        }
+        setLoading(false);
+      }
+    );
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const signOut = async () => {
-    setUser(null);
-    // In production, call Supabase auth.signOut()
+    await supabase.auth.signOut();
   };
 
   return (
