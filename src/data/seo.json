@@ -1,5 +1,21 @@
 {
-  "title": "ODIADEV - Nigeria-first Voice AI",
-  "description": "ODIADEV builds reliable voice agents for the web and WhatsApp. Adaqua AI is our conversational assistant with text and voice capabilities.",
-  "keywords": "voice AI, Nigeria, WhatsApp, conversational AI, Adaqua AI"
+  "meta": {
+    "title": "ODIADEV | Nigeria's Voice AI — Leadership, Team & Advisors",
+    "description": "ODIADEV builds Nigeria-ready voice AI. Adaqua AI is our conversational assistant for web and WhatsApp.",
+    "keywords": "voice AI Nigeria, Nigerian TTS, WhatsApp AI agent, CrossAI, Adaqua AI, ODIADEV voice automation"
+  },
+  "og": {
+    "title": "ODIADEV — Nigeria's Voice AI | Team & Advisors",
+    "description": "Meet the ODIADEV team behind Adaqua AI and CrossAI.",
+    "image": "/images/team/austyn.jpg"
+  },
+  "jsonld": {
+    "@context": "https://schema.org",
+    "@graph": [
+      { "@type": "Organization", "name": "ODIADEV", "url": "https://your-site.odia.dev", "logo": "/images/logo-fingerprint.png",
+        "brand": [{ "@type": "Brand", "name": "Adaqua AI" }, { "@type": "Brand", "name": "CrossAI" }] },
+      { "@type": "Product", "name": "Adaqua AI", "brand": { "@type": "Organization", "name": "ODIADEV" },
+        "description": "Conversational AI assistant with natural Nigerian voices." }
+    ]
+  }
 }

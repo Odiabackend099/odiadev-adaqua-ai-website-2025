@@ -1,11 +1,7 @@
-export async function withBackoff<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
-  for (let i = 0; i < maxRetries; i++) {
-    try {
-      return await fn();
-    } catch (error) {
-      if (i === maxRetries - 1) throw error;
-      await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
-    }
+export async function withBackoff<T>(fn: () => Promise<T>): Promise<T> {
+  const delays = [250, 1000];
+  try { return await fn(); } catch (e) {
+    for (const d of delays) { await new Promise(r => setTimeout(r, d)); try { return await fn(); } catch {} }
+    throw e;
   }
-  throw new Error("Max retries exceeded");
 }

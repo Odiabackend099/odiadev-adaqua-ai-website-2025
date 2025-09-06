@@ -1,8 +1,10 @@
 {
   "brand": {
-    "logo": {
-      "src": "/images/logo-fingerprint.png",
-      "alt": "ODIADEV Logo"
-    }
+    "logo": { "src": "/images/logo-fingerprint.png", "alt": "ODIADEV fingerprint logo", "width": 1024, "height": 1024 }
+  },
+  "team": {
+    "austyn": { "src": "/images/team/austyn.jpg", "alt": "Austyn Eguale — Founder & CEO, ODIADEV" },
+    "ntaji": { "src": "/images/team/ntaji.png", "alt": "Peter Ntaji — Chairman & Group Managing Director, CrossAI (ODIADEV)" },
+    "benjamin": { "src": "/images/team/benjamin.png", "alt": "Benjamin Nwoye — Director, Commercial Strategy, ODIADEV" }
   }
 }

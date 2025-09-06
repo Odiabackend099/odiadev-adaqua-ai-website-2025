@@ -1,0 +1,24 @@
+{
+  "company": "ODIADEV",
+  "product": "Adaqua AI",
+  "leaders": [
+    {
+      "name": "Austyn Eguale",
+      "title": "Founder & CEO, ODIADEV",
+      "photoKey": "austyn",
+      "bio": "Product-driven founder building ODIADEV's voice AI for Nigeria: fast TTS, dependable WhatsApp/web agents, and real deployments for business and public service."
+    },
+    {
+      "name": "Peter Ntaji",
+      "title": "Chairman & Group Managing Director, CrossAI (ODIADEV)",
+      "photoKey": "ntaji",
+      "bio": "Leads CrossAI, ODIADEV's emergency response line; works with state actors to deliver escalation workflows and always-on voice assistance."
+    },
+    {
+      "name": "Benjamin Nwoye",
+      "title": "Director, Commercial Strategy, ODIADEV",
+      "photoKey": "benjamin",
+      "bio": "Drives growth partnerships and enterprise adoption of voice automation."
+    }
+  ]
+}
