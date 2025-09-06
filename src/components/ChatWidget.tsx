@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { withBackoff } from "../lib/retry";
 import { ttsGenerate } from "../lib/tts";
 import { PersonaSelect, Persona } from "./PersonaSelect";
+import { analytics } from "../lib/analytics";
 
 type Msg = { role:"user"|"assistant"; text:string; audioUrl?:string };
 
@@ -17,6 +18,10 @@ export default function ChatWidget() {
     if (!text.trim()) return;
     const user:Msg={role:"user",text};
     setMessages(m=>[...m,user]);
+    
+    // Track chat message
+    analytics.trackChatMessage(text.length, voiceMode);
+    
     setText("");
 
     const resp = await fetch(agentUrl,{method:"POST",headers:{'Content-Type':'application/json'},body:JSON.stringify({message:user.text})});
@@ -25,7 +30,13 @@ export default function ChatWidget() {
 
     let audioUrl: string|undefined;
     if (voiceMode && ttsReady) {
-      audioUrl = await withBackoff(() => ttsGenerate({ text: replyText, persona }));
+      try {
+        audioUrl = await withBackoff(() => ttsGenerate({ text: replyText, persona }));
+        analytics.trackTTSRequest(persona, replyText.length, true);
+      } catch (error) {
+        analytics.trackTTSRequest(persona, replyText.length, false);
+        console.error('TTS failed:', error);
+      }
     }
     setMessages(m=>[...m,{role:"assistant",text:replyText,audioUrl}]);
   }
@@ -37,8 +48,21 @@ export default function ChatWidget() {
         <div className="font-semibold">Adaqua AI by ODIADEV</div>
         <div className="ml-auto flex items-center gap-2">
           <label className="text-sm">Voice</label>
-          <input type="checkbox" checked={voiceMode} onChange={e=>setVoiceMode(e.target.checked)} />
-          <PersonaSelect value={persona} onChange={setPersona}/>
+          <input 
+            type="checkbox" 
+            checked={voiceMode} 
+            onChange={e => {
+              setVoiceMode(e.target.checked);
+              analytics.trackVoiceToggle(e.target.checked);
+            }} 
+          />
+          <PersonaSelect 
+            value={persona} 
+            onChange={p => {
+              setPersona(p);
+              analytics.trackPersonaChange(p);
+            }}
+          />
         </div>
       </div>
 

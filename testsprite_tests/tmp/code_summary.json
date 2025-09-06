@@ -1,0 +1,95 @@
+{
+  "tech_stack": [
+    "TypeScript",
+    "React",
+    "Vite",
+    "Express.js",
+    "Tailwind CSS",
+    "Supabase Edge Functions",
+    "Node.js",
+    "Deno"
+  ],
+  "features": [
+    {
+      "name": "Adaqua AI Chat Widget",
+      "description": "Conversational AI assistant with text and voice modes, supporting 4 Nigerian personas",
+      "files": [
+        "src/components/ChatWidget.tsx",
+        "src/components/PersonaSelect.tsx",
+        "src/lib/tts.ts",
+        "src/lib/retry.ts"
+      ]
+    },
+    {
+      "name": "Voice AI System",
+      "description": "Text-to-speech with 4 Nigerian personas (Ezinne, Lexi, ODIA, Atlas) and voice toggle functionality",
+      "files": [
+        "src/lib/tts.ts",
+        "supabase/functions/tts/index.ts",
+        "supabase/functions/tts/import_map.json"
+      ]
+    },
+    {
+      "name": "AI Brain Server",
+      "description": "Express.js server providing intelligent responses for the chat widget",
+      "files": [
+        "server/brain.js"
+      ]
+    },
+    {
+      "name": "Frontend Application",
+      "description": "React-based frontend with ODIADEV branding and responsive design",
+      "files": [
+        "src/App.tsx",
+        "src/main.tsx",
+        "src/styles.css",
+        "public/index.html"
+      ]
+    },
+    {
+      "name": "Data Management",
+      "description": "Team data, SEO metadata, and image configuration",
+      "files": [
+        "src/data/team.json",
+        "src/data/seo.json",
+        "src/data/images.json"
+      ]
+    },
+    {
+      "name": "Testing Suite",
+      "description": "Unit tests and smoke tests for functionality validation",
+      "files": [
+        "src/lib/tts.test.ts",
+        "scripts/smoke-chat.mjs"
+      ]
+    },
+    {
+      "name": "Build Configuration",
+      "description": "Vite, TypeScript, and Tailwind CSS configuration",
+      "files": [
+        "vite.config.ts",
+        "tsconfig.json",
+        "tsconfig.node.json",
+        "tailwind.config.js",
+        "postcss.config.js"
+      ]
+    },
+    {
+      "name": "Deployment Configuration",
+      "description": "Render.com deployment configuration and environment setup",
+      "files": [
+        "render.yaml",
+        ".env.example",
+        "package.json"
+      ]
+    },
+    {
+      "name": "SEO Optimization",
+      "description": "Search engine optimization with sitemap and robots.txt",
+      "files": [
+        "public/robots.txt",
+        "public/sitemap.xml"
+      ]
+    }
+  ]
+}

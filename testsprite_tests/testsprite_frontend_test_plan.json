@@ -1,0 +1,530 @@
+[
+  {
+    "id": "TC001",
+    "title": "Website loads with all key sections",
+    "description": "Verify that the ODIADEV marketing website loads correctly and displays all required sections including Hero, What we do, Adaqua AI demo, Use-cases, Leadership, Contact, and Footer.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the ODIADEV marketing website homepage"
+      },
+      {
+        "type": "assertion",
+        "description": "Check that the Hero section is visible and contains expected content"
+      },
+      {
+        "type": "assertion",
+        "description": "Check that the What we do section is present and correctly rendered"
+      },
+      {
+        "type": "assertion",
+        "description": "Check that the Adaqua AI demo section with chat widget is present"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify Use-cases, Leadership, Contact, and Footer sections load correctly and contain expected content"
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "Adaqua AI widget initializes in text mode by default",
+    "description": "Ensure Adaqua AI chat widget loads with text input enabled by default and voice mode disabled.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the ODIADEV website and locate the Adaqua AI chat widget"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the chat input box is enabled for typing text"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm voice mode toggle is off by default"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify no audio playback starts automatically"
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "Send and receive text message through chat widget",
+    "description": "Validate chat widget sends user text to Render AI Brain API and displays AI response text correctly.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Enter a valid text message into the chat input"
+      },
+      {
+        "type": "action",
+        "description": "Click submit/send button or press Enter"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm a request is sent to the Render AI Brain API"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the AI text reply is rendered in the chat interface"
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "Enable voice mode and receive TTS audio for AI replies",
+    "description": "Test enabling voice mode, selecting a Nigerian persona, and receiving AI replies as audio playback via secure Supabase Edge TTS proxy.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Toggle voice mode on"
+      },
+      {
+        "type": "action",
+        "description": "Select a Nigerian persona (Ezinne, Lexi, ODIA, or Atlas) from the dropdown"
+      },
+      {
+        "type": "action",
+        "description": "Send a text message via the chat widget"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a TTS request is securely sent to Supabase Edge function without exposing secrets"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm audio playback of AI reply starts after user interaction"
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "Validate persona switching updates voice and UI",
+    "description": "Check that switching between Nigerian personas updates the chat widget voice settings and UI controls accordingly.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Toggle voice mode on"
+      },
+      {
+        "type": "action",
+        "description": "Select Nigerian persona 'Ezinne'"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm voice settings reflect 'Ezinne' persona"
+      },
+      {
+        "type": "action",
+        "description": "Switch to persona 'Atlas'"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify voice settings update to 'Atlas' and relevant UI reflects the change"
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "Character limit enforcement on chat input",
+    "description": "Verify the text input enforces character limit preventing input above defined maximum.",
+    "category": "error handling",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Focus chat input and enter text exceeding the character limit"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm input stops accepting characters beyond the limit, or shows validation error"
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "Handle TTS audio request failures gracefully",
+    "description": "Test that if TTS audio request via Supabase Edge function fails or times out, widget falls back to text-only mode and shows appropriate error message.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Enable voice mode"
+      },
+      {
+        "type": "action",
+        "description": "Simulate Supabase TTS function failure or timeout (e.g., network error or server error)"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify widget displays an error toast notification to user"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm widget falls back to displaying AI reply only as text with no audio playback"
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "Rate limiting enforcement on TTS requests",
+    "description": "Validate rate limiting behavior on Supabase Edge function for TTS requests to prevent abuse and ensure limits are enforced.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Rapidly send TTS requests through voice-enabled chat widget exceeding allowed threshold"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that further TTS requests are blocked with appropriate rate limit error response"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm widget displays rate limit error message to user and prevents audio requests"
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "Secure API keys and CORS enforcement",
+    "description": "Ensure that no API keys or secrets are exposed in frontend code and that Supabase Edge TTS function enforces CORS restrictions properly.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Inspect frontend bundle and network requests for any secret or API key exposure"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify no secrets or API keys are present in frontend source code or network requests"
+      },
+      {
+        "type": "action",
+        "description": "Send cross-origin request to Supabase Edge TTS function from unauthorized origin"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm CORS policy blocks the unauthorized request"
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "SEO artifacts validation",
+    "description": "Check that SEO artifacts are correctly implemented including robots.txt, sitemap.xml, meta tags (Open Graph, JSON-LD), enabling proper indexing and sharing.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Access public/robots.txt and verify disallowed and allowed paths as per requirements"
+      },
+      {
+        "type": "action",
+        "description": "Access public/sitemap.xml and verify structure and URLs"
+      },
+      {
+        "type": "action",
+        "description": "Inspect HTML meta tags on key pages for Open Graph and JSON-LD structured data"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify all SEO tags follow specification and no errors in structured data"
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "Accessibility compliance verification",
+    "description": "Validate that the website and Adaqua AI chat widget support keyboard navigation, have ARIA labels, and meet AA color contrast standards.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate through the website and chat widget using only keyboard (Tab, Shift+Tab, Enter, Space)"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify all interactive elements are reachable and usable via keyboard"
+      },
+      {
+        "type": "action",
+        "description": "Use accessibility testing tools to check ARIA attributes on chat widget elements"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm presence of proper ARIA labels and roles"
+      },
+      {
+        "type": "action",
+        "description": "Evaluate color contrast of text and UI components for compliance with AA standard"
+      },
+      {
+        "type": "assertion",
+        "description": "Assert color contrast ratios meet WCAG AA criteria"
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Analytics event tracking without PII",
+    "description": "Test that analytics events are sent for page views, chat messages, voice toggles, and TTS usage without including any personally identifiable information.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open browser developer tools and enable network monitoring"
+      },
+      {
+        "type": "action",
+        "description": "Navigate through the website and interact with the chat widget (send messages, toggle voice, switch personas)"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify analytics events are sent accurately for each user action"
+      },
+      {
+        "type": "assertion",
+        "description": "Inspect event payloads to confirm no PII such as user text, email, or IP address is logged"
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "Performance validation on 4G and 3G Nigerian networks",
+    "description": "Measure page load and time-to-first audio metrics to ensure compliance with specified performance goals: P95 time-to-first-audio ≤4s on 4G, ≤7s on 3G; LCP ≤2.5s.",
+    "category": "performance",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Simulate 4G network conditions and navigate to the website; initiate voice mode audio reply"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm 95th percentile time-to-first-audio ≤4 seconds under 4G"
+      },
+      {
+        "type": "action",
+        "description": "Simulate 3G network conditions and repeat the same steps"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm 95th percentile time-to-first-audio ≤7 seconds under 3G"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify Largest Contentful Paint (LCP) for homepage is ≤2.5 seconds on Nigerian network profiles"
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "Cross-browser compatibility on target browsers and devices",
+    "description": "Ensure the website and chat widget function correctly on Chrome, Edge, Safari (iOS 16+), and Android Chrome on low-end devices.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Test the website and chat widget on desktop Chrome browser"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify full functionality including text and voice chat modes"
+      },
+      {
+        "type": "action",
+        "description": "Repeat tests on Edge desktop browser"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify no UI or functional regressions"
+      },
+      {
+        "type": "action",
+        "description": "Test on Safari browser on iOS 16+ device"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm responsiveness, voice permissions, and audio playback"
+      },
+      {
+        "type": "action",
+        "description": "Test on Android Chrome browser on low-end device"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify performance and functionality remain acceptable"
+      }
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "Retry logic when AI Brain API fails",
+    "description": "Check that the chat widget implements retry logic with timeout for AI Brain responses and handles failure gracefully.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Simulate AI Brain API failure or timeout when sending chat message"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the widget retries the request at least once according to retry logic"
+      },
+      {
+        "type": "assertion",
+        "description": "If retries fail, confirm the widget shows an error toast and remains usable for further input"
+      }
+    ]
+  },
+  {
+    "id": "TC016",
+    "title": "Switching between voice and text modes updates UI and functionality",
+    "description": "Test that toggling voice mode on and off updates the UI controls and chat widget behavior accordingly without reload or errors.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Start with voice mode off, type and send text messages"
+      },
+      {
+        "type": "action",
+        "description": "Toggle voice mode on"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify voice toggle UI shows enabled state and plays audio for AI replies"
+      },
+      {
+        "type": "action",
+        "description": "Toggle voice mode off again"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm voice playback stops and chat operates in text-only mode"
+      }
+    ]
+  },
+  {
+    "id": "TC017",
+    "title": "Input sanitization and security against injection",
+    "description": "Ensure that text inputs in chat widget are sanitized to prevent injection or malformed inputs causing crashes or security issues.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Enter inputs with special characters, scripts, or encoded payloads into chat input"
+      },
+      {
+        "type": "action",
+        "description": "Submit the input to the chat widget"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify inputs are sanitized and no XSS or injection vulnerabilities are present"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm chat widget handles such inputs gracefully without errors or crashes"
+      }
+    ]
+  },
+  {
+    "id": "TC018",
+    "title": "Analytics opt-in voice toggle rate tracking",
+    "description": "Check that analytics accurately report the percentage of users opting into voice mode with voice toggle enabled >=25%.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Simulate multiple user sessions interacting with the chat widget, toggling voice mode on or off"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify analytics events count voice toggle usage without identifying users"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm that recorded data shows voice toggle opt-in rate is at least 25%"
+      }
+    ]
+  },
+  {
+    "id": "TC019",
+    "title": "Operational logs capture chat and TTS usage",
+    "description": "Validate that operational logs capture chat usage and TTS request metrics without logging sensitive information.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Perform chat interactions with voice enabled and disabled"
+      },
+      {
+        "type": "action",
+        "description": "Review server and Supabase Edge function logs"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify logs include timestamps, request counts, rate limiting events, and success/failures"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm no user raw text or PII is logged"
+      }
+    ]
+  },
+  {
+    "id": "TC020",
+    "title": "Keyboard navigation accessibility for chat widget controls",
+    "description": "Ensure the chat widget’s persona dropdown and voice toggle controls are fully operable via keyboard.",
+    "category": "accessibility",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Focus on chat widget controls using Tab key"
+      },
+      {
+        "type": "action",
+        "description": "Use keyboard arrows/enter to select different persona from dropdown"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm persona changes on keyboard selection and UI updates"
+      },
+      {
+        "type": "action",
+        "description": "Use keyboard to toggle voice mode on and off"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify voice toggle responds to keyboard events correctly"
+      }
+    ]
+  }
+]

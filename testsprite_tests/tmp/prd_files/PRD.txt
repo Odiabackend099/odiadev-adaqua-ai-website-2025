@@ -1,0 +1,330 @@
+Here’s a complete, no-ambiguity **PRD** for the **ODIADEV website + Adaqua AI conversational widget**. It’s written so any PM/engineer can ship without extra back-and-forth. ODIADEV = company. **Adaqua AI = the assistant (product)**.
+
+---
+
+# Product Requirements Document (PRD)
+
+**Product:** Adaqua AI (by ODIADEV) – website + chat widget
+**Company:** ODIADEV
+**Primary markets:** Nigeria/Africa, mobile-first
+**Environments:** Dev → Staging → Prod
+**Owners:**
+
+* Product/PM: ODIADEV founder
+* Tech Lead: ODIADEV engineering
+* Infra: ODIADEV (Supabase, Render)
+* Security/Compliance: ODIADEV
+
+---
+
+## 1) Goals & Non-Goals
+
+### Goals (MVP)
+
+1. Launch **odiadev** marketing site with embedded **Adaqua AI** chat widget.
+2. **Text chat by default**; **opt-in voice mode** (ChatGPT-style).
+3. Secure **Supabase Edge Function** proxy to ODIADEV TTS (no secrets in frontend).
+4. Connect to **Render agent brain** for responses.
+5. Production SEO (robots/sitemap/meta/OG/JSON-LD), mobile-first UI, fast on Nigerian networks.
+6. Basic analytics + operational logs; rate limiting & audit for TTS calls.
+
+### Non-Goals (later releases)
+
+* Payments, auth’d dashboards, or subscription flows.
+* WhatsApp integration UI (kept for future surface).
+* Multi-tenant admin console.
+* Fine-tuned model training pipeline.
+
+---
+
+## 2) Users & Value
+
+* **Prospects (CXOs, founders, public sector):** evaluate voices & latency; confirm ODIADEV capability.
+* **Developers/partners:** understand API contracts; try the widget quickly.
+* **Media/SEO crawlers:** index brand, team, and product.
+
+**Value:** hear Nigerian-accent voices fast; trust security posture; initiate deals.
+
+---
+
+## 3) Success Metrics / SLAs
+
+* **Time-to-first-audio (P95):** ≤ 4.0s on 4G, ≤ 7.0s on 3G.
+* **LCP (home, P75 Nigeria):** ≤ 2.5s.
+* **Error rate (TTS P95):** < 2% 5xx.
+* **Voice opt-in rate:** ≥ 25% of sessions.
+* **Bounce rate (home):** ≤ 50%.
+* **SEO:** Indexed pages ≥ 2 within 72h; core web vitals “good”.
+
+---
+
+## 4) Scope & Features
+
+### 4.1 Website
+
+* **Sections:** Hero, What we do, Adaqua AI demo, Use-cases, Leadership (founder photo only), Contact, Footer.
+* **Branding:** ODIADEV primary; **“Adaqua AI — the assistant by ODIADEV.”**
+* **SEO pack:** robots.txt, sitemap.xml, OG/Twitter tags, JSON-LD (Organization + Product).
+* **Accessibility:** keyboard/ARIA labels; color contrast AA.
+* **Analytics:** simple page + widget events (see §10).
+
+### 4.2 Chat Widget (core)
+
+* **Modes:**
+
+  * **Text Mode (default):** user types or uses optional STT; assistant replies **text only**.
+  * **Voice Mode (opt-in):** toggle enables spoken replies; assistant returns **text + audio**. Autoplay only after user gesture.
+* **Personas (fixed):** Ezinne, Lexi, ODIA, Atlas → map to voice IDs server-side.
+* **Controls:** input area (5000 char limit w/ counter), Send, Voice toggle, Persona select, audio player, retry toast.
+* **Resilience:** retry with backoff (250ms, 1s) on 5xx; if audio fails, still show text.
+* **Mobile:** full-screen expansion; 48px touch targets.
+
+### 4.3 Security & Privacy (MVP)
+
+* No secrets in frontend.
+* Supabase Edge Function injects `x-api-key`.
+* **Rate limit:** max 3 req/sec per IP; burst 6; 60/min quota (config).
+* **Audit logs:** record timestamp, ip hash, persona, text length, status (no raw text by default).
+* **CORS:** `https://*.odia.dev` only.
+* **Mic consent:** clear on first enable; show “Mic on” indicator.
+* **NDPR:** data minimization; no PII storage; text/audio ephemeral (configurable retention 0–7 days).
+
+---
+
+## 5) Detailed Requirements
+
+### 5.1 Functional
+
+1. **Render Brain API**
+
+   * **URL (prod):** `https://odiadev-brain-9udt.onrender.com/api/chat`
+   * **Request:** `POST` `{"message": "<user text>"}`
+   * **Response:** `200` `{"reply": "<assistant text>"}`
+   * **Errors:** `4xx/5xx` `{"error": "message"}`
+   * **Timeout:** 20s; client retry once on 5xx.
+
+2. **TTS Proxy (Supabase Edge Function)**
+
+   * **URL (prod):** `https://nyrvnskbkitrazudrkkc.functions.supabase.co/tts`
+   * **Request (client → function):**
+
+     ```json
+     { "text": "<string>", "persona": "Ezinne|Lexi|ODIA|Atlas", "format":"mp3" }
+     ```
+   * **Validation:** `text` 1..5000 chars; persona valid.
+   * **Function → ODIADEV TTS upstream:**
+
+     * **URL:** `POST https://tts-api.odia.dev/v1/tts`
+     * **Header:** `x-api-key: <ODIADEV_API_KEY>`
+     * **Body:** `{ "text": "<string>", "voice_id": "<mapped>", "format":"mp3" }`
+   * **Response (function → client):** stream `audio/mpeg`; else JSON error.
+   * **Timeout:** 120s.
+   * **Rate limit:** 3 rps; per-IP or per-session (Supabase edge quotas).
+   * **Logging:** success/failure, duration, bytes, persona; **no raw text**.
+
+3. **Persona Mapping (authoritative)**
+
+   * Ezinne → `naija_female_warm`
+   * Lexi → `naija_female_bold`
+   * ODIA → `naija_male_deep`
+   * Atlas → `naija_male_warm`
+
+4. **Autoplay Policy**
+
+   * Audio play only from a user gesture event; show “Tap to play” fallback when blocked.
+
+5. **Content & Assets**
+
+   * Images: fingerprint logo, **founder photo** only on Team section (≤180KB, lazy-load).
+   * Copy: concise; emphasize reliability, Nigerian networks, privacy-first.
+
+### 5.2 Non-Functional
+
+* **Performance budgets:** initial HTML+CSS+JS ≤ 180KB gz; images lazy.
+* **Availability:** 99.9% monthly for widget; graceful degradation to text mode if TTS down.
+* **Observability:** /health for static (200), function health via logs; front-end console errors captured.
+
+---
+
+## 6) Architecture & Tech
+
+### 6.1 Frontend
+
+* **React + Vite + Tailwind**; hosted static (Vercel/Render/static Nginx).
+* **Env (frontend-safe):**
+
+  * `VITE_AGENT_API_URL` = Render chat endpoint
+  * `VITE_TTS_FUNCTION_URL` = Supabase function endpoint
+  * `VITE_SITE_URL` = public site URL
+
+### 6.2 Backend/Proxy
+
+* **Supabase Edge Function (Deno/TS)** for TTS proxy.
+* **Secrets (Supabase):**
+
+  * `ODIADEV_TTS_URL=https://tts-api.odia.dev`
+  * `ODIADEV_TTS_ENDPOINT=/v1/tts`
+  * `ODIADEV_API_KEY=<secret>`
+  * `ODIADEV_TTS_FORMAT=mp3`
+  * `ODIADEV_TTS_TIMEOUT=120`
+  * `ODIADEV_TTS_MAX_TEXT=5000`
+
+### 6.3 Agent Brain
+
+* **Render** web service exposes `/api/chat`.
+* Internal LLM/provider keys live only on Render (not in frontend).
+
+---
+
+## 7) UI/UX Specification (key states)
+
+**Widget header:** ODIADEV logo + “Adaqua AI by ODIADEV”; **Voice toggle** (off by default); **Persona select** (dropdown).
+**Message list:** bubbles (user right/gold, assistant left/white); audio player appears when voice mode on.
+**Composer:** textarea (char counter), send button; STT optional (phase 2).
+**Empty state:** brief instructions, “Turn on voice to hear Ezinne, ODIA, Lexi, Atlas.”
+**Error states:** upstream busy → toast “Service busy; try again.”; audio blocked → “Tap to play.”
+**Mobile:** full-screen overlay; floating close button.
+
+**Color palette:** Navy #0e2240, Deep navy #132a52, Gold #b08d57, White/Cloud.
+**Typography:** Inter (UI), Playfair Display (headlines).
+**Accessibility:** focus outlines, labels for toggles, escape to close.
+
+---
+
+## 8) SEO & Content Deliverables
+
+* **robots.txt** allowing crawl; **sitemap.xml** with `/` and `/team`.
+* **Meta:** Title/Description from SEO JSON.
+* **OG/Twitter:** title/description/image.
+* **JSON-LD:**
+
+  * `Organization` = ODIADEV (logo, url).
+  * `Product` = Adaqua AI (brand ODIADEV).
+* **Copy blocks:**
+
+  * **Hero:** “Nigeria-first Voice AI. Adaqua AI speaks clearly, fast.”
+  * **Use-cases:** customer support, public info lines, internal tooling.
+  * **Team:** roles provided; one founder image.
+
+---
+
+## 9) Analytics & Events
+
+Minimum events (no PII):
+
+* `page_view` (path, referrer)
+* `chat_send` (len, mode, persona)
+* `chat_reply` (latency\_ms, success)
+* `tts_request` (persona, text\_len)
+* `tts_success` (bytes, duration\_ms) / `tts_error` (code)
+* `voice_toggle` (on/off) / `persona_change` (from→to)
+
+Storage: client → lightweight endpoint or privacy-friendly provider. Redact content.
+
+---
+
+## 10) Testing Plan
+
+### 10.1 Unit
+
+* TTS client returns blob URL on `audio/*`.
+* Persona mapping validator.
+* Retry with backoff called as specified.
+
+### 10.2 Integration
+
+* **Happy path:** user → brain → text → TTS → audio plays.
+* **Degrade:** TTS 502 → text only + toast; retry succeeds.
+* **Autoplay blocked:** play button appears.
+* **Long text (>5000):** blocked with UI message.
+
+### 10.3 Cross-Browser/Device
+
+* Chrome/Edge, Safari (iOS 16+), Android Chrome (low-end device).
+* 3G Fast throttling; confirm <7s audio P95.
+
+### 10.4 Security
+
+* Confirm no `x-api-key` in network panel.
+* CORS denies non-odia.dev origins.
+* CSP/Permissions-Policy present for microphone.
+
+**Acceptance Criteria:** all above pass; metrics in §3 hit on staging synthetic tests.
+
+---
+
+## 11) Delivery Plan & Timeline (suggested)
+
+* **Week 1:** UI scaffold, widget, Render brain wiring, JSON/SEO, images; staging up.
+* **Week 2:** Supabase function + rate limiting + logs; tests; performance passes; content polish; go-live.
+* **Post-launch (Week 3):** instrument metrics, SEO submission, bugfixes.
+
+---
+
+## 12) Risks & Mitigations
+
+* **Network latency (Nigeria):** compress assets; keep requests ≤2 per message; retries with backoff.
+* **Autoplay restrictions:** explicit user gesture; clear UI for manual play.
+* **Key leakage:** proxy only; pre-launch audit.
+* **TTS outages:** degrade to text; banner + status page.
+* **SEO mislabel (brand confusion):** JSON-LD tests; QA content (ODIADEV company, Adaqua AI product).
+
+---
+
+## 13) Operations & Runbook
+
+* **Health:** function deploy check (`200` & `audio/*`), brain `/health` or `/api/chat` echo.
+* **Logs:** function structured logs; rotate daily.
+* **Backups:** Supabase settings & function code in repo; Render config exported.
+* **Observability:** front-end error boundary → console capture; weekly latency report.
+* **Incident:** switch `VOICE_MODE=false` flag if TTS unstable; show banner.
+
+---
+
+## 14) Config & Env (names only)
+
+**Frontend (.env – safe):**
+
+* `VITE_AGENT_API_URL`
+* `VITE_TTS_FUNCTION_URL`
+* `VITE_SITE_URL`
+
+**Supabase Function (secrets):**
+
+* `ODIADEV_TTS_URL`
+* `ODIADEV_TTS_ENDPOINT`
+* `ODIADEV_API_KEY`
+* `ODIADEV_TTS_FORMAT`
+* `ODIADEV_TTS_TIMEOUT`
+* `ODIADEV_TTS_MAX_TEXT`
+
+**Feature flags (optional):**
+
+* `VOICE_MODE_DEFAULT=false`
+* `ENABLE_STT=false`
+* `TTS_RATE_LIMIT_RPS=3`
+
+---
+
+## 15) Definition of Done (DoD)
+
+* Site builds and deploys; widget works text-only and voice mode.
+* No secrets in client; CORS locked; rate limiting active.
+* SEO artifacts validated (Rich Results Test); pages indexed.
+* Metrics dashboard shows latency + error rates.
+* Hand-off: README with run scripts; environment variables documented.
+
+---
+
+## 16) Future Roadmap (v1.1+)
+
+* STT capture button (web speech/Whisper proxy).
+* Auth + free trial minutes counter.
+* WhatsApp Business integration demo.
+* Admin console (usage, logs, voice toggles).
+* More voices/languages; phoneme dictionary.
+* Offline cache for last responses.
+
+---
+
+This PRD captures **what** to build, **how** it must behave, and **how we’ll verify it**—with ODIADEV as the brand and **Adaqua AI** strictly as the assistant.

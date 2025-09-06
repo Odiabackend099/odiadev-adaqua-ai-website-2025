@@ -1,0 +1,16 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:5173",
+  "executionArgs": {
+    "projectName": "odiadev-site",
+    "projectPath": "C:\\Users\\OD~IA\\Downloads\\odiadev-site",
+    "testIds": [],
+    "additionalInstruction": "Test the complete voice AI functionality including all 4 personas, voice toggle, chat responses, and ensure the application is production-ready. Focus on testing the conversational AI agent capabilities and voice synthesis features.",
+    "envs": {
+      "API_KEY": "sk-user-3A5p5rTK3rGjmtstpupqjwEvx6AL2Ks5HEVp4vlzeOEIQ2Gdcv8I2K0TdZSoLLHbG2FXul7pOwgk3wBOAMIahob13MTbiG84pZO5pd4U0l0msZfhmDvp6UmuhRw63FpjBzQ"
+    }
+  },
+  "proxy": "http://75f641e3-6ab2-42a9-91b5-2edd09df8c0f:7H2GEH4Wp288YDT7dMbhr5xj0jSnsiam@tun.testsprite.com:8080"
+}

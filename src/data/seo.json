@@ -12,7 +12,7 @@
   "jsonld": {
     "@context": "https://schema.org",
     "@graph": [
-      { "@type": "Organization", "name": "ODIADEV", "url": "https://your-site.odia.dev", "logo": "/images/logo-fingerprint.png",
+      { "@type": "Organization", "name": "ODIADEV", "url": "https://odia.dev", "logo": "/images/logo-fingerprint.png",
         "brand": [{ "@type": "Brand", "name": "Adaqua AI" }, { "@type": "Brand", "name": "CrossAI" }] },
       { "@type": "Product", "name": "Adaqua AI", "brand": { "@type": "Organization", "name": "ODIADEV" },
         "description": "Conversational AI assistant with natural Nigerian voices." }
