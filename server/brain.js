@@ -1,12 +1,38 @@
 import express from 'express';
 import cors from 'cors';
+import rateLimit from 'express-rate-limit';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// CORS configuration
+const allowed = (process.env.ALLOWED_ORIGINS || 'https://odia.dev,https://*.odia.dev,http://localhost:5173')
+  .split(',')
+  .map(s => s.trim())
+  .filter(Boolean);
+
+app.use(cors({
+  origin: function (origin, cb) {
+    if (!origin) return cb(null, true);
+    const ok = allowed.some((a) =>
+      a === origin ||
+      (a.includes('*.odia.dev') && origin.endsWith('.odia.dev'))
+    );
+    cb(ok ? null : new Error('CORS blocked'), ok ? true : false);
+  },
+  credentials: false
+}));
+
+// Rate limiting
+app.use('/api/', rateLimit({
+  windowMs: (Number(process.env.RATE_LIMIT_WINDOW || 60)) * 1000,
+  max: Number(process.env.RATE_LIMIT_MAX || 60),
+  standardHeaders: true,
+  legacyHeaders: false
+}));
+
 // Middleware
-app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 
 // AI Agent Brain - Simple but effective responses
 const generateResponse = (message) => {
@@ -84,6 +110,11 @@ app.post('/api/chat', (req, res) => {
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', service: 'ODIADEV Brain' });
+});
+
+// Health check for Render
+app.get('/healthz', (req, res) => {
+  res.json({ ok: true });
 });
 
 // Start server

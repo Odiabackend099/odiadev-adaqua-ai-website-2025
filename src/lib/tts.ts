@@ -1,5 +1,5 @@
 export async function ttsGenerate(opts: { text: string; persona?: "Ezinne"|"Lexi"|"ODIA"|"Atlas"; voice_id?: string; format?: "mp3" }) {
-  const endpoint = import.meta.env.VITE_TTS_FUNCTION_URL as string;
+  const endpoint = import.meta.env.VITE_TTS_ENDPOINT as string;
   const res = await fetch(endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

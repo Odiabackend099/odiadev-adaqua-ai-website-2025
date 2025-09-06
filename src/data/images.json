@@ -1,6 +1,6 @@
 {
   "brand": {
-    "logo": { "src": "/images/logo-fingerprint.png", "alt": "ODIADEV fingerprint logo", "width": 1024, "height": 1024 }
+    "logo": { "src": "/images/logo-fingerprint.png", "alt": "ODIADEV fingerprint logo" }
   },
   "team": {
     "austyn": { "src": "/images/team/austyn.jpg", "alt": "Austyn Eguale — Founder & CEO, ODIADEV" },
