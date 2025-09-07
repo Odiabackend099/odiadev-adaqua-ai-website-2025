@@ -3,93 +3,87 @@
     "TypeScript",
     "React",
     "Vite",
-    "Express.js",
     "Tailwind CSS",
-    "Supabase Edge Functions",
+    "Express.js",
     "Node.js",
-    "Deno"
+    "Supabase",
+    "PostgreSQL"
   ],
   "features": [
     {
-      "name": "Adaqua AI Chat Widget",
-      "description": "Conversational AI assistant with text and voice modes, supporting 4 Nigerian personas",
-      "files": [
-        "src/components/ChatWidget.tsx",
-        "src/components/PersonaSelect.tsx",
-        "src/lib/tts.ts",
-        "src/lib/retry.ts"
-      ]
+      "name": "Landing Page",
+      "description": "Marketing homepage with hero section, product cards, and call-to-action buttons",
+      "files": ["src/pages/Landing.tsx", "src/data/site.json"]
     },
     {
-      "name": "Voice AI System",
-      "description": "Text-to-speech with 4 Nigerian personas (Ezinne, Lexi, ODIA, Atlas) and voice toggle functionality",
-      "files": [
-        "src/lib/tts.ts",
-        "supabase/functions/tts/index.ts",
-        "supabase/functions/tts/import_map.json"
-      ]
+      "name": "Authentication System",
+      "description": "User authentication with Supabase including login, signup, and session management",
+      "files": ["src/pages/Login.tsx", "src/contexts/AuthContext.tsx", "src/components/AuthForm.tsx", "src/lib/supabase.ts"]
+    },
+    {
+      "name": "Chat Widget",
+      "description": "Conversational AI assistant with text and voice modes, persona selection, and TTS integration",
+      "files": ["src/components/ChatWidget.tsx", "src/components/PersonaSelect.tsx"]
     },
     {
       "name": "AI Brain Server",
-      "description": "Express.js server providing intelligent responses for the chat widget",
-      "files": [
-        "server/brain.js"
-      ]
+      "description": "Express.js server providing intelligent responses for the chat widget with rate limiting and CORS",
+      "files": ["server/brain.js", "server/brain-secure.js"]
     },
     {
-      "name": "Frontend Application",
-      "description": "React-based frontend with ODIADEV branding and responsive design",
-      "files": [
-        "src/App.tsx",
-        "src/main.tsx",
-        "src/styles.css",
-        "public/index.html"
-      ]
+      "name": "Text-to-Speech (TTS)",
+      "description": "Voice synthesis with 4 Nigerian personas through Supabase Edge Function",
+      "files": ["src/lib/tts.ts", "supabase/functions/tts/index.ts"]
+    },
+    {
+      "name": "Assistant Wizard",
+      "description": "Onboarding flow for creating and configuring AI assistants",
+      "files": ["src/components/AssistantWizard.tsx"]
+    },
+    {
+      "name": "CRM Dashboard",
+      "description": "Management interface for viewing and managing assistants and conversations",
+      "files": ["src/components/CRMDashboard.tsx"]
+    },
+    {
+      "name": "Health Monitoring",
+      "description": "System health banner and monitoring components",
+      "files": ["src/components/HealthBanner.tsx"]
+    },
+    {
+      "name": "Routing System",
+      "description": "React Router setup for navigation between landing page and authenticated areas",
+      "files": ["src/App.tsx", "src/main.tsx"]
+    },
+    {
+      "name": "Analytics",
+      "description": "Event tracking and analytics integration",
+      "files": ["src/lib/analytics.ts"]
+    },
+    {
+      "name": "Retry Logic",
+      "description": "Robust retry mechanisms for API calls and network requests",
+      "files": ["src/lib/retry.ts"]
     },
     {
       "name": "Data Management",
-      "description": "Team data, SEO metadata, and image configuration",
-      "files": [
-        "src/data/team.json",
-        "src/data/seo.json",
-        "src/data/images.json"
-      ]
+      "description": "Static data files for images, team information, and SEO metadata",
+      "files": ["src/data/images.json", "src/data/team.json", "src/data/seo.json"]
     },
     {
-      "name": "Testing Suite",
-      "description": "Unit tests and smoke tests for functionality validation",
-      "files": [
-        "src/lib/tts.test.ts",
-        "scripts/smoke-chat.mjs"
-      ]
+      "name": "Build System",
+      "description": "Vite-based build system with TypeScript, Tailwind CSS, and PostCSS",
+      "files": ["vite.config.ts", "tailwind.config.js", "postcss.config.js", "tsconfig.json"]
     },
     {
-      "name": "Build Configuration",
-      "description": "Vite, TypeScript, and Tailwind CSS configuration",
-      "files": [
-        "vite.config.ts",
-        "tsconfig.json",
-        "tsconfig.node.json",
-        "tailwind.config.js",
-        "postcss.config.js"
-      ]
+      "name": "Testing",
+      "description": "Smoke tests and validation scripts for deployment verification",
+      "files": ["scripts/smoke-local.mjs", "scripts/smoke-mvp.mjs", "scripts/smoke.test.mjs", "scripts/smoke-chat.mjs"]
     },
     {
       "name": "Deployment Configuration",
-      "description": "Render.com deployment configuration and environment setup",
-      "files": [
-        "render.yaml",
-        ".env.example",
-        "package.json"
-      ]
-    },
-    {
-      "name": "SEO Optimization",
-      "description": "Search engine optimization with sitemap and robots.txt",
-      "files": [
-        "public/robots.txt",
-        "public/sitemap.xml"
-      ]
+      "description": "Render.com and Vercel deployment configurations",
+      "files": ["render.yaml", "package.json"]
     }
   ]
 }

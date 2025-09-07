@@ -1,0 +1,32 @@
+{
+  "hero": {
+    "title": "Nigeria's Voice AI That Works — ODIADEV",
+    "subtitle": "We build reliable speech solutions for real business in Nigeria: web & WhatsApp assistants, high-clarity TTS, and always-on emergency response. Adaqua AI (assistant) and CrossAI (escalation) are ready today."
+  },
+  "products": [
+    {
+      "key": "adaqua",
+      "name": "Adaqua AI — Conversational Assistant",
+      "copy": "Your voice+text agent for websites and WhatsApp. Text-first by default; tap to enable voice when the user is ready.",
+      "points": [
+        "Natural Nigerian voices: Ezinne, Lexi, ODIA, Atlas",
+        "Secure TTS via Supabase Edge proxy (no key in browser)",
+        "Low-bandwidth friendly: retries + backoff + text fallback"
+      ]
+    },
+    {
+      "key": "crossai",
+      "name": "CrossAI — Emergency Response",
+      "copy": "Escalation workflows for public safety and operations — capture, triage, route, and notify reliably.",
+      "points": [
+        "24/7 voice prompts with clear, local accents",
+        "Configurable playbooks and escalation paths",
+        "Audit trails and real-time status"
+      ]
+    }
+  ],
+  "cta": {
+    "primary": { "label": "Try Adaqua Demo", "href": "#chat" },
+    "secondary": { "label": "Talk to Sales", "href": "/contact" }
+  }
+}

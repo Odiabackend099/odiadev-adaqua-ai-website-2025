@@ -80,14 +80,7 @@ export default function CRMDashboard() {
   const generateWidgetSnippet = (assistantId: string) => {
     const siteUrl = import.meta.env.VITE_SITE_URL || 'https://odia.dev';
     return `<!-- Adaqua AI Chat Widget -->
-<script>
-  (function() {
-    const script = document.createElement('script');
-    script.src = '${siteUrl}/widget.js';
-    script.setAttribute('data-assistant-id', '${assistantId}');
-    document.head.appendChild(script);
-  })();
-</script>`;
+<script src="${siteUrl}/widget.js" data-assistant="${assistantId}"></script>`;
   };
 
   const copyWidgetSnippet = async () => {

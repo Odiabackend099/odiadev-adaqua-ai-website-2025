@@ -7,10 +7,10 @@
     "projectName": "odiadev-site",
     "projectPath": "C:\\Users\\OD~IA\\Downloads\\odiadev-site",
     "testIds": [],
-    "additionalInstruction": "Test the complete voice AI functionality including all 4 personas, voice toggle, chat responses, and ensure the application is production-ready. Focus on testing the conversational AI agent capabilities and voice synthesis features.",
+    "additionalInstruction": "Verify that all critical fixes from the audit report have been implemented: authentication working, frontend environment variables correct, widget.js embed script available, persona mapping with friendly names, assistant creation UI functional, and embed snippet generator working. Test the complete end-to-end flow from signup to widget embedding.",
     "envs": {
       "API_KEY": "sk-user-3A5p5rTK3rGjmtstpupqjwEvx6AL2Ks5HEVp4vlzeOEIQ2Gdcv8I2K0TdZSoLLHbG2FXul7pOwgk3wBOAMIahob13MTbiG84pZO5pd4U0l0msZfhmDvp6UmuhRw63FpjBzQ"
     }
   },
-  "proxy": "http://75f641e3-6ab2-42a9-91b5-2edd09df8c0f:7H2GEH4Wp288YDT7dMbhr5xj0jSnsiam@tun.testsprite.com:8080"
+  "proxy": "http://0a250ccd-cb19-48cd-a4e7-6688d9879adb:HTSAkMKdODX9Uhio3ObGedwYGEXeOjyT@tun.testsprite.com:8080"
 }

@@ -19,7 +19,7 @@ export default function ChatWidget({ assistantId, persona: initialPersona, voice
   const [voiceMode, setVoiceMode] = useState(false);
   const [persona, setPersona] = useState<Persona>(initialPersona || "Ezinne");
   const agentUrl = import.meta.env.VITE_AGENT_API_URL as string;
-  const ttsReady = useMemo(() => Boolean(import.meta.env.VITE_TTS_ENDPOINT), []);
+  const ttsReady = useMemo(() => Boolean(import.meta.env.VITE_TTS_PROXY_URL), []);
 
   // Save messages to database if assistantId is provided
   const saveMessage = async (role: "user" | "assistant", messageText: string) => {

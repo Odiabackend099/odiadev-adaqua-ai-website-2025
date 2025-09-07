@@ -1,0 +1,418 @@
+ODIADEV — Website + Voice Assistant Platform (Adaqua AI)
+Product Requirements Document (PRD) — v1.0 (MVP) → v1.2
+1) Vision & Goals
+
+Vision:
+Make it dead simple for any Nigerian business (tech-savvy or not) to create a voice-enabled AI assistant—on their website (chat widget) first, then Telegram and WhatsApp—powered by ODIADEV’s TTS with natural Naija voices.
+
+Primary Goals (MVP v1.0):
+
+Leads-converting marketing site for ODIADEV (company) with products Adaqua AI (assistant) and CrossAI (emergency response).
+
+Auth + dashboard where a user signs up and creates a simple assistant in minutes.
+
+Web chat widget embedded on any site with text by default and opt-in voice mode using ODIADEV TTS via Supabase proxy.
+
+Agent brain hosted on Render; TTS proxied via Supabase Edge Functions; no secrets in the browser.
+
+Basic analytics (messages, active users, audio minutes) and health/observability.
+
+Secondary Goals (post-MVP v1.1/v1.2):
+
+v1.1: Telegram bot connector, templated flows, richer analytics.
+
+v1.2: WhatsApp Business integration (onboarding wizard, template management), simple billing (Flutterwave), team roles.
+
+Non-Goals (now):
+
+Custom model training, multi-tenant billing, marketplace, advanced workflow builder, third-party TTS/ASR.
+
+2) User Personas
+
+SME Owner / Ops Lead (non-technical)
+
+Wants: quick setup, reliable voice, simple analytics, branded widget.
+
+PM / Growth Marketer
+
+Wants: lead capture, CTAs, transcripts export, SEO-friendly site.
+
+Dev/Integrator (light technical)
+
+Wants: copy-paste script, stable APIs, clear envs, CORS documented.
+
+3) Success Metrics (MVP)
+
+Conversion: ≥5% visitor → sign-up on odia.dev.
+
+Activation: ≥60% new accounts create an assistant and test voice within 10 minutes.
+
+Reliability: 99.5% successful TTS calls; p95 chat < 2.5s (text), < 4.5s (with TTS).
+
+Support: <2% sessions hit fatal error banner.
+
+4) High-Level Architecture (current stack)
+
+Frontend site + dashboard + widget: React + Vite + Tailwind (Vercel hosting).
+
+Auth + data: Supabase (Auth, Postgres, RLS).
+
+Edge Functions (Supabase):
+
+tts (or tts-proxy) → forwards to ODIADEV TTS (https://tts-api.odia.dev/v1/tts) with x-api-key from secrets.
+
+odia-agent / chat (optional façade) → forwards to Render brain if needed.
+
+Agent brain: Node/Express on Render (/api/chat).
+
+Voice: ODIADEV TTS; personas → voice_id (Ezinne, Lexi, ODIA, Atlas).
+
+CORS: allow https://*.odia.dev (+ local dev).
+
+SEO: robots.txt, sitemap.xml, OG/Twitter cards, JSON-LD.
+
+5) Detailed Functional Requirements
+5.1 Marketing Website (lead-converting)
+
+Hero with crisp value prop: “Nigeria-first Voice AI for Web & WhatsApp.”
+
+Products: Adaqua AI (assistant), CrossAI (emergency response).
+
+Use-case sections with proof, local accents, speed, uptime.
+
+CTA: “Try the Demo” (opens widget) + “Get Early Access / Sign Up”.
+
+Team/Leadership (public bios; 1 founder image for performance).
+
+Trust signals: advisor quotes, uptime badge, data privacy (NDPR note).
+
+Footer: company details, privacy/terms, contact.
+
+SEO: metadata, JSON-LD (Organization + Product), optimized images.
+
+5.2 Auth & Dashboard
+
+Sign up / Sign in with Supabase email+password; email verification.
+
+Onboarding wizard:
+
+Name your assistant.
+
+Choose persona (Ezinne/Lexi/ODIA/Atlas).
+
+Add greeting + expected intents (pick a template).
+
+Set channel: start with Web Chat Widget; get embed snippet.
+
+Test: send a message; toggle Voice; hear reply.
+
+Assistant list & status (active, last message).
+
+Analytics (basic): conversations, messages, audio minutes, last 7 days.
+
+Settings: brand colors/logo for widget; export transcripts (CSV).
+
+Docs: copy-paste embed code, Telegram & WhatsApp coming soon banners.
+
+5.3 Chat Widget (Web, MVP)
+
+Floating widget, mobile-first, dark ODIADEV theme + logo.
+
+Text chat by default; Voice mode only when user toggles.
+
+Persona selector (hidden for end-users; chosen by account owner).
+
+Audio playback after user gesture; fallback “Tap to play”.
+
+Backoff retries (250ms, 1s) on TTS 5xx; if failure, show text.
+
+Character limit to 5000 for TTS; split or warn when exceeded.
+
+Accessibility: screen-reader labels, keyboard navigation, contrasts.
+
+5.4 Agent Brain (Render)
+
+Endpoint: POST /api/chat → {message, session_id?, agent_id?}
+
+Response: {reply: string, meta?: {tokens?, latency_ms?}}
+
+Stateless allowed for MVP; store messages in Supabase for history.
+
+Health: GET /healthz → {ok:true}.
+
+5.5 TTS Proxy (Supabase Edge Function)
+
+Endpoint (public): /functions/v1/tts
+
+Input: { text, persona? | voice_id, format="mp3" }
+
+Validation: non-empty string, length ≤ 5000; persona maps to fixed IDs.
+
+Forward: POST https://tts-api.odia.dev/v1/tts with x-api-key (secret).
+
+Output: audio/* streaming; else {error} with status code.
+
+CORS: allow https://*.odia.dev.
+
+5.6 Telegram (v1.1)
+
+Wizard to create bot via BotFather; paste token; we create webhook to Render or Supabase function; map to assistant.
+
+MVP: text chat only; voice reply as audio file (optional setting).
+
+5.7 WhatsApp Business (v1.2)
+
+Onboarding explainer (WABA provider requirements, templates).
+
+Webhook endpoint + signature verification; outbound messages via provider API.
+
+Template approval flow UI (queued / approved).
+
+Rate/quality tier note in dashboard.
+
+6) Non-Functional Requirements
+
+Security
+
+Never expose ODIADEV TTS key; all calls via edge function.
+
+Supabase RLS enabled for all tables (tenant isolation).
+
+JWT expiry 1h, refresh supported by Supabase.
+
+Sanitized logs (no PII, no secrets).
+
+Performance
+
+p95 text reply < 2.5s; with TTS < 4.5s on 3G.
+
+Widget bundle < 120KB gzipped; images lazy-loaded & compressed.
+
+Reliability
+
+Backoff retries; graceful failures; offline banner for network loss.
+
+Health checks: /healthz (Render), /v1/health (TTS upstream).
+
+Compliance
+
+NDPR basics: consent, data minimization, delete/export user data.
+
+Store timestamps in UTC; render Africa/Lagos in UI.
+
+7) Data Model (Supabase)
+
+Tables (prefix app_)
+
+users (Supabase auth)
+
+profiles (user_id FK, display_name, role)
+
+assistants (id, user_id, name, persona, greeting, brand_color, status)
+
+channels (assistant_id, type enum: web|telegram|whatsapp, status, config_json)
+
+conversations (id, assistant_id, channel, started_at, last_msg_at)
+
+messages (id, conversation_id, role enum:user|assistant|system, text, audio_url?, created_at)
+
+metrics_daily (assistant_id, date, msg_count, tts_seconds)
+
+RLS: Each table filters by auth.uid() = row.user_id (or joins through assistant ownership).
+
+8) API Contracts
+8.1 Widget → Brain
+
+POST VITE_AGENT_API_URL
+Body: {message: string, assistantId?: string, sessionId?: string}
+Response: {reply: string, meta?: {...}}
+
+8.2 Widget → TTS Proxy
+
+POST VITE_TTS_PROXY_URL
+Body: { text: string, persona?: "Ezinne"|"Lexi"|"ODIA"|"Atlas", format?: "mp3" }
+Response: audio/mpeg stream; else {"error":"tts_failed"}.
+
+9) Environment & Deployment
+9.1 Vercel (Frontend)
+
+Environment variables (exact names):
+
+VITE_SITE_URL=https://odia.dev
+VITE_AGENT_API_URL=https://odiadev-adaqua-ai-brain.onrender.com/api/chat
+VITE_TTS_PROXY_URL=https://nyrvnskbkitrazudrkkc.supabase.co/functions/v1/tts
+VITE_SUPABASE_URL=https://nyrvnskbkitrazudrkkc.supabase.co
+VITE_SUPABASE_ANON_KEY=<supabase anon key>
+VITE_ALLOWED_ORIGINS=https://odia.dev,https://www.odia.dev,https://*.odia.dev,http://localhost:5173
+
+
+Build: npm ci && npm run build
+
+Node: 20.x
+
+Output: Static + any serverless stubs (if used)
+
+9.2 Supabase
+
+Edge Function: tts secrets:
+
+ODIADEV_TTS_URL=https://tts-api.odia.dev
+ODIADEV_TTS_ENDPOINT=/v1/tts
+ODIADEV_API_KEY=<secret>
+ODIADEV_TTS_FORMAT=mp3
+ODIADEV_TTS_MAX_TEXT=5000
+
+
+CORS allow https://*.odia.dev.
+
+9.3 Render (Agent Brain)
+
+Start: npm run start (listens on $PORT)
+
+Health: /healthz
+
+Auto-deploy on commit to main.
+
+Env (example):
+
+NODE_ENV=production
+ALLOWED_ORIGINS=https://odia.dev,https://www.odia.dev,https://*.odia.dev
+LOG_LEVEL=info
+
+
+Ensure server binds to 0.0.0.0 and uses process.env.PORT.
+
+10) UX Flows (MVP)
+
+Visit odia.dev → Landing page → CTA → Sign Up.
+
+Email verification (Supabase) → Dashboard.
+
+Create Assistant (wizard): name → persona → greeting → template intents → Test (send/receive; toggle Voice).
+
+Get Embed: copy <script src="...widget.js" data-assistant="ID"></script>; test on any page.
+
+Analytics: see basic counts; export CSV.
+
+11) Content & SEO
+
+Titles/Descriptions/Keywords from earlier SEO pack.
+
+JSON-LD: Organization=ODIADEV, Product=Adaqua AI, Brand=CrossAI.
+
+Robots: allow all; Sitemap lists /, /team, /privacy, /terms.
+
+Images: logo fingerprint; founder headshot only; lazy load; ≤180KB.
+
+12) Acceptance Criteria (MVP)
+
+No secrets in browser or network logs.
+
+Persona selector maps exactly:
+
+Ezinne → naija_female_warm
+
+Lexi → naija_female_bold
+
+ODIA → naija_male_deep
+
+Atlas → naija_male_warm
+
+Widget: voice plays only after user gesture; fallback to tap works.
+
+TTS proxy returns audio/*; on 5xx it retries twice then shows text.
+
+New user can create assistant and hear a reply within 5 minutes.
+
+Basic analytics reflect messages within 60s.
+
+Site passes Lighthouse: Performance ≥ 85 (mobile), Accessibility ≥ 90.
+
+13) QA Plan (key tests)
+
+Env wiring: remove non-VITE_ vars → build should fail gracefully; with correct VITE_ vars → login succeeds.
+
+CORS: block from unknown origin; allow from *.odia.dev.
+
+TTS: send 4 personas; verify Content-Type: audio/mpeg, blob length > 0.
+
+Autoplay: initial load should not auto-play until click.
+
+Network loss: simulate offline; show banner; resume gracefully.
+
+RLS: user A cannot see user B assistants/messages.
+
+Widget embed: simple static HTML page + script renders and chats.
+
+14) Risks & Mitigations
+
+WhatsApp onboarding complexity → Phase to v1.2, provide clear explainer and waitlist.
+
+Low bandwidth → compress assets, stream audio, retry with backoff.
+
+Key leakage risk → proxy pattern only; SRE checklist pre-launch.
+
+Latency spikes → cache agent system prompts in memory; keep brain light; scale Render.
+
+15) Roadmap & Milestones
+
+v1.0 (MVP, 2–3 weeks)
+
+Site + SEO, Auth, Assistant wizard, Web chat widget (voice toggle), TTS proxy, basic analytics, deploy.
+
+v1.1 (2 weeks)
+
+Telegram connector, transcript export, richer dashboard metrics, simple templates library.
+
+v1.2 (3–4 weeks)
+
+WhatsApp Business onboarding, template management, simple billing (Flutterwave), roles.
+
+16) Launch Checklist
+
+ Vercel envs set with VITE_ names only; build cache cleared.
+
+ Supabase RLS policies enabled; anon key used only on client; service key server-side.
+
+ Render brain responds on /healthz and $PORT.
+
+ TTS health green; 4 persona smoke tests pass.
+
+ Robots/sitemap/OG images verified.
+
+ 10 scripted E2E runs (widget text+voice) succeed.
+
+17) Post-Launch: Metrics & Ops
+
+Dashboards: request rate, error rate, TTS success %, latency p50/p95, audio minutes by persona.
+
+Alerts: TTS 5xx > 2% for 5 min; brain latency p95 > 6s; DB errors.
+
+Support: in-app “Need help?” link to docs/email; quick triage runbook.
+
+18) Copy/Content (lead-gen skeleton)
+
+Hero: “Give your customers a natural Nigerian voice—on your website today.”
+CTA: Try the Demo | Get Early Access
+
+Why ODIADEV: Real Naija voices, privacy-first, works on low bandwidth.
+
+Adaqua AI: Your voice assistant for web & WhatsApp; text by default, voice when you enable it.
+
+CrossAI: Emergency response workflows with reliable escalation.
+
+How it works: Sign up → pick persona → paste widget → talk.
+
+Proof: adviser quotes; uptime; partner logos (when available).
+
+Footer: Contact, Privacy, Terms, Lagos & remote.
+
+Final Notes
+
+The earlier “Invalid API key” came from wrong env names; this PRD locks the VITE_ convention and proxy security model.
+
+For Cursor/Kursor, keep the same env names in .env.example and all client code, and ensure widget reads from import.meta.env.VITE_*.
+
+All secrets live only in Supabase Edge Function secrets and Render env—not in Vercel/browser.
+
+If you want, I can also provide a concise SRS (system requirement spec) or a Gherkin suite for E2E scenarios using Playwright to automate the text+voice flows.

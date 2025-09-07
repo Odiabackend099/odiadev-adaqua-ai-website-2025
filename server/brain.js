@@ -118,9 +118,11 @@ app.get('/healthz', (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`🧠 ODIADEV Brain running on port ${PORT}`);
-  console.log(`📡 Chat endpoint: http://localhost:${PORT}/api/chat`);
+const HOST = '0.0.0.0';
+app.listen(PORT, HOST, () => {
+  const base = process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`;
+  console.log(`🧠 ODIADEV Brain listening on ${HOST}:${PORT}`);
+  console.log(`📡 Chat endpoint: ${base}/api/chat`);
 });
 
 export default app;

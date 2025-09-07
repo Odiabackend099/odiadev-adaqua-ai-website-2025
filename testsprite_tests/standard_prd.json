@@ -1,138 +1,184 @@
 {
   "meta": {
-    "project": "ODIADEV Website + Adaqua AI Conversational Widget",
+    "project": "ODIADEV Voice Assistant Platform (Adaqua AI)",
     "date": "2025-09-05",
-    "prepared_by": "ODIADEV Product Team"
+    "prepared_by": "Software Development Manager"
   },
-  "product_overview": "Adaqua AI is a conversational AI assistant embedded in the ODIADEV marketing website, providing Nigerian-accented voice and text chat to engage prospects and developers with a secure, mobile-friendly, and SEO-optimized experience.",
+  "product_overview": "ODIADEV is a voice-enabled AI assistant platform designed primarily for Nigerian businesses to easily create and deploy natural Naija voice assistants on websites, with future expansions to Telegram and WhatsApp. The platform features a marketing site, user authentication, assistant creation wizard, a web chat widget supporting both text and voice modes with distinct Naija personas, and backend AI services for conversational intelligence and text-to-speech (TTS).",
   "core_goals": [
-    "Launch the ODIADEV marketing site with embedded Adaqua AI chat widget.",
-    "Provide text chat by default with opt-in voice mode featuring Nigerian personas.",
-    "Secure TTS calls via Supabase Edge Functions proxy without exposing secrets.",
-    "Connect frontend to Render agent brain API for intelligent AI responses.",
-    "Ensure SEO optimization, mobile-first responsive design, and fast performance on Nigerian networks.",
-    "Implement basic analytics, operational logs, and rate-limiting for TTS usage."
+    "Deliver a lead-converting marketing website showcasing ODIADEV products Adaqua AI and CrossAI.",
+    "Enable users to sign up, create, and configure AI assistants quickly via an intuitive onboarding wizard.",
+    "Provide a web chat widget supporting text and opt-in voice powered by ODIADEV's indigenous TTS with distinct Nigerian personas.",
+    "Ensure secure and scalable backend AI brain with chat and TTS proxy services protecting API keys and user data.",
+    "Integrate basic analytics for usage and health monitoring to maintain performance and reliability.",
+    "Plan phased expansions with Telegram (v1.1) and WhatsApp Business integration (v1.2) including richer analytics and billing."
   ],
   "key_features": [
-    "Responsive marketing website with sections: Hero, What we do, Adaqua AI demo, Use-cases, Leadership, Contact, Footer.",
-    "Adaqua AI chat widget supporting text and optional voice modes with four Nigerian personas (Ezinne, Lexi, ODIA, Atlas).",
-    "Persona selection and voice toggle controls with character-limited input and audio player.",
-    "Secure Supabase Edge Function proxy for TTS requests with rate limiting and no raw text logging.",
-    "Integration with Render hosted AI Brain for chat replies with retry and timeout logic.",
-    "SEO artifacts including robots.txt, sitemap.xml, meta tags, Open Graph, and JSON-LD for organization and product.",
-    "Accessibility features including keyboard navigation, ARIA labels, and AA color contrast compliance.",
-    "Analytics events without PII to track page views, chat usage, voice toggles, and TTS metrics."
+    "Marketing Website with clear value propositions, product descriptions, CTAs, trust signals, SEO optimization, and company info.",
+    "User Authentication with Supabase handling email/password login, email verification, and session management.",
+    "Assistant Onboarding Wizard for naming assistants, persona selection (Ezinne, Lexi, ODIA, Atlas), greeting messages, intent templates, and channel setup including embed snippet generation.",
+    "Web Chat Widget with floating mobile-first design, dark ODIADEV theme, text chat by default, optional voice mode with TTS integration, persona-based voice playback, accessibility features, and retry logic for failure scenarios.",
+    "AI Brain Server hosted on Render with Express.js handling intelligent chat responses and health checks.",
+    "TTS Proxy via Supabase Edge Functions forwarding requests securely to ODIADEV TTS API with support for 4 native personas, text length validation, and audio streaming.",
+    "CRM Dashboard showing assistants, conversation analytics, status, brand customization, and transcript export.",
+    "Support for future Telegram bot connector and WhatsApp Business onboarding, template management, and team roles.",
+    "Security enforced with RLS on database, token management, no secret exposure, and sanitized logs.",
+    "Performance aimed to maintain low latency and high reliability with retry logic and health monitoring."
   ],
   "user_flow_summary": [
-    "User visits the ODIADEV site and views the marketing content and Adaqua AI demo section.",
-    "User interacts with the chat widget by typing messages in text mode or optionally enabling voice mode to receive spoken replies.",
-    "User selects a Nigerian persona from the dropdown to customize the assistant voice for TTS playback.",
-    "Chat widget sends user text to Render brain API; receives AI text reply.",
-    "If voice mode is enabled, widget requests audio stream via Supabase Edge TTS function securely, and plays audio after user gesture.",
-    "Error states handled gracefully with toasts and retry logic; widget fallback to text-only if TTS audio fails.",
-    "User can switch personas or toggle voice mode seamlessly, with UI updates reflecting changes."
+    "User visits odia.dev landing page, reads product info, and clicks CTAs to try demo or sign up.",
+    "New user signs up using email, verifies account, and accesses the dashboard.",
+    "User launches assistant creation wizard, names assistant, selects a persona, configures greeting and expected intents, selects web chat channel, and tests assistant with text and voice.",
+    "User copies the embed code snippet and integrates the chat widget into their website.",
+    "Visitors on the user's website interact with the floating web chat widget, sending messages via text or toggling voice mode to converse using Naija TTS voices.",
+    "User monitors assistant analytics including conversations, messages, and audio usage via dashboard.",
+    "Future flows include Telegram bot setup via BotFather token input and WhatsApp Business onboarding with webhook and template management."
   ],
   "validation_criteria": [
-    "Widget and website fully build and deployed, supporting text and voice chat modes.",
-    "No secrets exposed in frontend; TTS proxy enforces rate limiting and CORS restrictions.",
-    "SEO artifacts validated and pages indexed by search engines within specified time.",
-    "Performance goals met: P95 time-to-first-audio ≤4s on 4G, ≤7s on 3G; LCP ≤2.5s for Nigerian users.",
-    "Analytics events captured accurately without logging PII; voice opt-in rate ≥25%.",
-    "Cross-browser compatibility on Chrome, Edge, Safari (iOS 16+), and Android Chrome on low-end devices.",
-    "Security tested: no API key leakage, CORS and CSP enforced, permission prompts shown correctly.",
-    "Successful unit, integration, and end-to-end tests executed as outlined, covering happy path and failure scenarios."
+    "No secret API keys are exposed to the browser or network logs; all sensitive calls are proxied securely via Supabase Edge Functions or Render server.",
+    "Persona voice IDs map exactly: Ezinne to naija_female_warm, Lexi to naija_female_bold, ODIA to naija_male_deep, Atlas to naija_male_warm.",
+    "Voice in the widget only plays after a user gesture; fallback tap to play is functional if autoplay is blocked.",
+    "TTS proxy returns audio streams with proper content types; on server errors (5xx) the system retries twice before falling back to text-only responses.",
+    "New users can complete assistant creation and hear a voice reply within 5 minutes of signup.",
+    "Basic analytics reflect real-time message counts and audio usage within 60 seconds latency.",
+    "The website passes Lighthouse audits with Performance ≥ 85 (mobile) and Accessibility ≥ 90.",
+    "CORS policies strictly restrict origins to allowed domains to prevent unauthorized resource access.",
+    "RLS policies ensure tenant data isolation so users cannot see others' assistants or messages.",
+    "Widget embedding with simple HTML script works on static or dynamic pages and renders a working chat interface.",
+    "Simulated network loss triggers and displays offline banners, and recovery is graceful without crashes."
   ],
   "code_summary": {
     "tech_stack": [
       "TypeScript",
       "React",
       "Vite",
-      "Express.js",
       "Tailwind CSS",
-      "Supabase Edge Functions",
+      "Express.js",
       "Node.js",
-      "Deno"
+      "Supabase",
+      "PostgreSQL"
     ],
     "features": [
       {
-        "name": "Adaqua AI Chat Widget",
-        "description": "Conversational AI assistant with text and voice modes, supporting 4 Nigerian personas",
+        "name": "Landing Page",
+        "description": "Marketing homepage with hero section, product cards, and call-to-action buttons",
         "files": [
-          "src/components/ChatWidget.tsx",
-          "src/components/PersonaSelect.tsx",
-          "src/lib/tts.ts",
-          "src/lib/retry.ts"
+          "src/pages/Landing.tsx",
+          "src/data/site.json"
         ]
       },
       {
-        "name": "Voice AI System",
-        "description": "Text-to-speech with 4 Nigerian personas (Ezinne, Lexi, ODIA, Atlas) and voice toggle functionality",
+        "name": "Authentication System",
+        "description": "User authentication with Supabase including login, signup, and session management",
         "files": [
-          "src/lib/tts.ts",
-          "supabase/functions/tts/index.ts",
-          "supabase/functions/tts/import_map.json"
+          "src/pages/Login.tsx",
+          "src/contexts/AuthContext.tsx",
+          "src/components/AuthForm.tsx",
+          "src/lib/supabase.ts"
+        ]
+      },
+      {
+        "name": "Chat Widget",
+        "description": "Conversational AI assistant with text and voice modes, persona selection, and TTS integration",
+        "files": [
+          "src/components/ChatWidget.tsx",
+          "src/components/PersonaSelect.tsx"
         ]
       },
       {
         "name": "AI Brain Server",
-        "description": "Express.js server providing intelligent responses for the chat widget",
+        "description": "Express.js server providing intelligent responses for the chat widget with rate limiting and CORS",
         "files": [
-          "server/brain.js"
+          "server/brain.js",
+          "server/brain-secure.js"
         ]
       },
       {
-        "name": "Frontend Application",
-        "description": "React-based frontend with ODIADEV branding and responsive design",
+        "name": "Text-to-Speech (TTS)",
+        "description": "Voice synthesis with 4 Nigerian personas through Supabase Edge Function",
+        "files": [
+          "src/lib/tts.ts",
+          "supabase/functions/tts/index.ts"
+        ]
+      },
+      {
+        "name": "Assistant Wizard",
+        "description": "Onboarding flow for creating and configuring AI assistants",
+        "files": [
+          "src/components/AssistantWizard.tsx"
+        ]
+      },
+      {
+        "name": "CRM Dashboard",
+        "description": "Management interface for viewing and managing assistants and conversations",
+        "files": [
+          "src/components/CRMDashboard.tsx"
+        ]
+      },
+      {
+        "name": "Health Monitoring",
+        "description": "System health banner and monitoring components",
+        "files": [
+          "src/components/HealthBanner.tsx"
+        ]
+      },
+      {
+        "name": "Routing System",
+        "description": "React Router setup for navigation between landing page and authenticated areas",
         "files": [
           "src/App.tsx",
-          "src/main.tsx",
-          "src/styles.css",
-          "public/index.html"
+          "src/main.tsx"
+        ]
+      },
+      {
+        "name": "Analytics",
+        "description": "Event tracking and analytics integration",
+        "files": [
+          "src/lib/analytics.ts"
+        ]
+      },
+      {
+        "name": "Retry Logic",
+        "description": "Robust retry mechanisms for API calls and network requests",
+        "files": [
+          "src/lib/retry.ts"
         ]
       },
       {
         "name": "Data Management",
-        "description": "Team data, SEO metadata, and image configuration",
+        "description": "Static data files for images, team information, and SEO metadata",
         "files": [
+          "src/data/images.json",
           "src/data/team.json",
-          "src/data/seo.json",
-          "src/data/images.json"
+          "src/data/seo.json"
         ]
       },
       {
-        "name": "Testing Suite",
-        "description": "Unit tests and smoke tests for functionality validation",
+        "name": "Build System",
+        "description": "Vite-based build system with TypeScript, Tailwind CSS, and PostCSS",
         "files": [
-          "src/lib/tts.test.ts",
+          "vite.config.ts",
+          "tailwind.config.js",
+          "postcss.config.js",
+          "tsconfig.json"
+        ]
+      },
+      {
+        "name": "Testing",
+        "description": "Smoke tests and validation scripts for deployment verification",
+        "files": [
+          "scripts/smoke-local.mjs",
+          "scripts/smoke-mvp.mjs",
+          "scripts/smoke.test.mjs",
           "scripts/smoke-chat.mjs"
         ]
       },
       {
-        "name": "Build Configuration",
-        "description": "Vite, TypeScript, and Tailwind CSS configuration",
-        "files": [
-          "vite.config.ts",
-          "tsconfig.json",
-          "tsconfig.node.json",
-          "tailwind.config.js",
-          "postcss.config.js"
-        ]
-      },
-      {
         "name": "Deployment Configuration",
-        "description": "Render.com deployment configuration and environment setup",
+        "description": "Render.com and Vercel deployment configurations",
         "files": [
           "render.yaml",
-          ".env.example",
           "package.json"
-        ]
-      },
-      {
-        "name": "SEO Optimization",
-        "description": "Search engine optimization with sitemap and robots.txt",
-        "files": [
-          "public/robots.txt",
-          "public/sitemap.xml"
         ]
       }
     ]
