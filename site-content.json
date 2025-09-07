@@ -1,0 +1,147 @@
+{
+  "brand": {
+    "name": "ODIADEV",
+    "tagline": "Nigeria's Voice AI That Works",
+    "colors": {
+      "primary": "#0C1C3A",
+      "secondary": "#C8A862",
+      "accent": "#FBBF24",
+      "muted": "#16213E",
+      "stone": "#93A4BE",
+      "surface": "#1A1A2E",
+      "background": "#0C1C3A",
+      "success": "#22C55E",
+      "danger": "#DC2626"
+    },
+    "fonts": {
+      "display": "Cormorant Garamond",
+      "body": "Inter",
+      "google_import": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&display=swap"
+    },
+    "logo": {
+      "light": "/assets/logo-light.svg",
+      "dark": "/assets/logo-dark.svg",
+      "favicon": "/assets/favicon.svg"
+    }
+  },
+  "routes": [
+    {
+      "path": "/",
+      "component": "Home"
+    },
+    {
+      "path": "/call",
+      "component": "VoiceCall"
+    },
+    {
+      "path": "/contact",
+      "component": "Contact"
+    }
+  ],
+  "hero": {
+    "headline": "Nigeria's Voice AI That Works — ODIADEV",
+    "subheadline": "Reliable speech solutions for real business in Nigeria: web & WhatsApp assistants, high‑clarity TTS, and always‑on emergency response.",
+    "primary_cta": {
+      "label": "Call Adaqua AI",
+      "href": "/call"
+    },
+    "secondary_cta": {
+      "label": "Talk to Sales",
+      "href": "/contact"
+    },
+    "background_image": "/assets/hero.jpg"
+  },
+  "sections": [
+    {
+      "id": "assistant",
+      "title": "Adaqua AI — Conversational Assistant",
+      "body": "Your voice+text agent for websites and WhatsApp. Text‑first by default; tap to enable voice when the user is ready.",
+      "bullets": [
+        "Natural Nigerian voices: Ezinne, Lexi, ODIA, Atlas",
+        "Secure TTS via Supabase Edge proxy (no key in browser)",
+        "Low‑bandwidth friendly: retries + backoff + text fallback"
+      ],
+      "image": "/assets/assistant.jpg",
+      "cta": {
+        "label": "Try the Voice Demo",
+        "href": "/call"
+      }
+    },
+    {
+      "id": "crossai",
+      "title": "CrossAI — Emergency Response",
+      "body": "Escalation workflows for public safety and operations teams that capture, triage, route, and notify reliably.",
+      "bullets": [
+        "24/7 voice prompts with clear, local accents",
+        "Configurable playbooks and escalation paths",
+        "Audit trails and real‑time status"
+      ],
+      "image": "/assets/crossai.jpg",
+      "cta": {
+        "label": "Talk to Sales",
+        "href": "/contact"
+      }
+    }
+  ],
+  "contact": {
+    "phone": "+2348105786326",
+    "whatsapp_url": "https://wa.me/2348105786326",
+    "sms_url": "sms:+2348105786326",
+    "emails": [
+      "info.odiadev@outlook.com",
+      "support.odiadev@outlook.com",
+      "austyn@odia.dev"
+    ],
+    "telegram": "https://t.me/Adaqua_AI_bot",
+    "links": [
+      {
+        "label": "LinkedIn",
+        "href": "https://www.linkedin.com/company/odiadev",
+        "external": true
+      }
+    ]
+  },
+  "footer": {
+    "copyright": "© 2025 ODIADEV",
+    "links": [
+      {
+        "label": "Privacy Policy",
+        "href": "/privacy"
+      },
+      {
+        "label": "Terms of Service",
+        "href": "/terms"
+      }
+    ]
+  },
+  "assets": {
+    "replace_these": [
+      {
+        "slot": "hero",
+        "path": "/assets/hero.jpg"
+      },
+      {
+        "slot": "assistant",
+        "path": "/assets/assistant.jpg"
+      },
+      {
+        "slot": "crossai",
+        "path": "/assets/crossai.jpg"
+      }
+    ]
+  },
+  "voice": {
+    "personas": [
+      "Ezinne",
+      "Lexi",
+      "ODIA",
+      "Atlas"
+    ],
+    "default_persona": "Ezinne"
+  },
+  "integrations": {
+    "agent_api": "${import.meta.env.VITE_AGENT_API_URL}",
+    "tts_proxy": "${import.meta.env.VITE_TTS_PROXY_URL}",
+    "supabase_url": "${import.meta.env.VITE_SUPABASE_URL}"
+  }
+}

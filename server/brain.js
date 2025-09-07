@@ -58,7 +58,7 @@ You possess advanced capabilities including:
 
 Always strive to be the most helpful, knowledgeable, and engaging AI assistant possible. Make every interaction valuable and memorable.`;
 
-// CORS for Render
+// CORS for Render - Enhanced for production
 app.use(cors({
   origin: function (origin, callback) {
     // Allow Render domains and development
@@ -74,7 +74,10 @@ app.use(cors({
     } else {
       callback(new Error('CORS blocked'));
     }
-  }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json({ limit: '1mb' }));
