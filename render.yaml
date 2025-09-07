@@ -1,37 +1,35 @@
-services:
-  # Frontend deployment (Render Static Site)
-  - type: web
+﻿services:
+  - type: static
     name: odiadev-frontend
-    env: static
-    buildCommand: npm ci && npm run build
-    staticPublishPath: ./dist
+    rootDir: .
+    buildCommand: npm ci --legacy-peer-deps && npm run build
+    publishPath: dist
     envVars:
+      - key: VITE_SITE_URL
+        value: https://odia.dev
+      - key: VITE_AGENT_API_URL
+        value: https://odiadev-brain.onrender.com/api/chat
+      - key: VITE_TTS_PROXY_URL
+        value: https://nyrvnskbkitrazudrkkc.supabase.co/functions/v1/tts
       - key: VITE_SUPABASE_URL
         value: https://nyrvnskbkitrazudrkkc.supabase.co
       - key: VITE_SUPABASE_ANON_KEY
-        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55cnZuc2tia2l0cmF6dWRya2tjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY3NjAwNTQsImV4cCI6MjA3MjMzNjA1NH0.4OjZqbrvXrF3N0CNpzUndh9HTKCtXiadA6NRQv98fCg
-      - key: VITE_AGENT_API_URL
-        value: https://odiadev-brain.onrender.com
-      - key: VITE_TTS_PROXY_URL
-        value: https://nyrvnskbkitrazudrkkc.supabase.co/functions/v1/tts
-      - key: VITE_SITE_URL
-        value: https://odiadev-frontend.onrender.com
+        sync: false
+      - key: VITE_ALLOWED_ORIGINS
+        value: https://odia.dev,https://www.odia.dev,https://*.odia.dev,http://localhost:5173
 
-  # Backend AI Brain deployment
   - type: web
     name: odiadev-brain
     env: node
-    rootDir: server
-    buildCommand: npm ci
-    startCommand: npm start
+    rootDir: .
+    buildCommand: npm ci --legacy-peer-deps
+    startCommand: node server/brain.js
+    healthCheckPath: /healthz
+    autoDeploy: true
     envVars:
       - key: NODE_ENV
         value: production
-      - key: GROQ_API_KEY
-        fromService:
-          type: secret
-          name: groq-api-key
+      - key: LOG_LEVEL
+        value: info
       - key: ALLOWED_ORIGINS
-        value: https://odiadev-frontend.onrender.com,https://odia.dev,http://localhost:5173
-      - key: RENDER_EXTERNAL_URL
-        value: https://odiadev-brain.onrender.com
+        value: https://odia.dev,https://www.odia.dev,https://*.odia.dev,http://localhost:5173
