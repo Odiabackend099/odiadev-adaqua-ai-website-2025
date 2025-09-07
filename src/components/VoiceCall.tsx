@@ -8,7 +8,7 @@ type Msg = { role: 'user' | 'assistant'; text: string }
 
 type SR = typeof window !== 'undefined' && (window as any).webkitSpeechRecognition
   ? any
-  : undefined
+  : undefined;
 
 const VoiceCall: React.FC = () => {
   const [status, setStatus] = useState<'idle'|'listening'|'thinking'|'speaking'|'blocked'>('idle')

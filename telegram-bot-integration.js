@@ -9,8 +9,8 @@
  * - URL: t.me/Adaqua_AI_bot
  */
 
-const TelegramBot = require('node-telegram-bot-api');
-const fetch = require('node-fetch');
+import TelegramBot from 'node-telegram-bot-api';
+import fetch from 'node-fetch';
 
 // Bot configuration
 const BOT_TOKEN = '8220781503:AAFWjcLZxYIaYdvpgQWwfjlDDwD_nws6tJY';
