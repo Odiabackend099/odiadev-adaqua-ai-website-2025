@@ -1,35 +1,28 @@
 ﻿services:
-  - type: static
-    name: odiadev-frontend
-    rootDir: .
-    buildCommand: npm ci --legacy-peer-deps && npm run build
-    publishPath: dist
-    envVars:
-      - key: VITE_SITE_URL
-        value: https://odia.dev
-      - key: VITE_AGENT_API_URL
-        value: https://odiadev-brain.onrender.com/api/chat
-      - key: VITE_TTS_PROXY_URL
-        value: https://nyrvnskbkitrazudrkkc.supabase.co/functions/v1/tts
-      - key: VITE_SUPABASE_URL
-        value: https://nyrvnskbkitrazudrkkc.supabase.co
-      - key: VITE_SUPABASE_ANON_KEY
-        sync: false
-      - key: VITE_ALLOWED_ORIGINS
-        value: https://odia.dev,https://www.odia.dev,https://*.odia.dev,http://localhost:5173
-
   - type: web
     name: odiadev-brain
     env: node
     rootDir: .
-    buildCommand: npm ci --legacy-peer-deps
+    buildCommand: npm install --legacy-peer-deps
     startCommand: node server/brain.js
     healthCheckPath: /healthz
-    autoDeploy: true
+    plan: starter
+    region: oregon
     envVars:
       - key: NODE_ENV
         value: production
-      - key: LOG_LEVEL
-        value: info
-      - key: ALLOWED_ORIGINS
-        value: https://odia.dev,https://www.odia.dev,https://*.odia.dev,http://localhost:5173
+
+  - type: static
+    name: odiadev-frontend
+    rootDir: .
+    buildCommand: npm install --legacy-peer-deps && npm run build
+    publishPath: dist
+    plan: starter
+    region: oregon
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: VITE_SITE_URL
+        value: https://odia.dev
+      - key: VITE_AGENT_API_URL
+        value: https://odiadev-brain.onrender.com/api/chat

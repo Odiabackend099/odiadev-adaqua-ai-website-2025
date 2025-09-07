@@ -1,29 +1,21 @@
-#!/bin/bash
-set -e
+﻿#!/bin/bash
+# Render deployment script
 
-echo "🚀 Building ODIADEV Application for Production..."
+echo "🚀 ODIADEV Render Deployment Starting..."
 
-# Clean previous builds
-echo "🧹 Cleaning previous builds..."
-rm -rf dist/
-rm -rf node_modules/.vite/
-
-# Install dependencies
+# Install dependencies with legacy peer deps
 echo "📦 Installing dependencies..."
-npm ci
+npm install --legacy-peer-deps --no-audit --no-fund
 
 # Build the application
 echo "🔨 Building application..."
 npm run build
 
 # Verify build
-echo "✅ Verifying build..."
-if [ -d "dist" ]; then
-    echo "✅ Build successful! Files in dist/:"
-    ls -la dist/
-else
-    echo "❌ Build failed - dist directory not found"
-    exit 1
+if [ ! -f "dist/index.html" ]; then
+  echo "❌ Build failed - no index.html found"
+  exit 1
 fi
 
-echo "🎉 Build completed successfully!"
+echo "✅ ODIADEV Build Complete!"
+ls -la dist/

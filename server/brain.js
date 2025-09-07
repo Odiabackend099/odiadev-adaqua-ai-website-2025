@@ -1,128 +1,56 @@
-import express from 'express';
+﻿import express from 'express';
 import cors from 'cors';
-import rateLimit from 'express-rate-limit';
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 10000;
 
-// CORS configuration
-const allowed = (process.env.ALLOWED_ORIGINS || 'https://odia.dev,https://*.odia.dev,http://localhost:5173')
-  .split(',')
-  .map(s => s.trim())
-  .filter(Boolean);
-
+// CORS for Render
 app.use(cors({
-  origin: function (origin, cb) {
-    if (!origin) return cb(null, true);
-    const ok = allowed.some((a) =>
-      a === origin ||
-      (a.includes('*.odia.dev') && origin.endsWith('.odia.dev'))
-    );
-    cb(ok ? null : new Error('CORS blocked'), ok ? true : false);
-  },
-  credentials: false
+  origin: function (origin, callback) {
+    // Allow Render domains and development
+    const allowed = [
+      'https://odia.dev',
+      'https://www.odia.dev',
+      'https://odiadev-frontend.onrender.com',
+      'http://localhost:5173'
+    ];
+    
+    if (!origin || allowed.some(a => a === origin || origin.endsWith('.onrender.com'))) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS blocked'));
+    }
+  }
 }));
 
-// Rate limiting
-app.use('/api/', rateLimit({
-  windowMs: (Number(process.env.RATE_LIMIT_WINDOW || 60)) * 1000,
-  max: Number(process.env.RATE_LIMIT_MAX || 60),
-  standardHeaders: true,
-  legacyHeaders: false
-}));
-
-// Middleware
 app.use(express.json({ limit: '1mb' }));
 
-// AI Agent Brain - Simple but effective responses
-const generateResponse = (message) => {
-  const lowerMessage = message.toLowerCase();
-  
-  // Greeting responses
-  if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
-    return "Hello! I'm Adaqua AI by ODIADEV. How can I help you today?";
-  }
-  
-  // ODIADEV mission
-  if (lowerMessage.includes('mission') || lowerMessage.includes('what is odiadev') || lowerMessage.includes('about odiadev')) {
-    return "ODIADEV builds reliable voice agents for the web and WhatsApp, focusing on Nigeria-first AI solutions that work well on mobile networks.";
-  }
-  
-  // Adaqua AI use cases
-  if (lowerMessage.includes('use case') || lowerMessage.includes('what can you do') || lowerMessage.includes('capabilities')) {
-    return "I can help with customer support, answer questions about ODIADEV services, provide information about our voice AI solutions, and assist with general inquiries. I work on both web and WhatsApp platforms.";
-  }
-  
-  // Data protection
-  if (lowerMessage.includes('data') && (lowerMessage.includes('protect') || lowerMessage.includes('privacy') || lowerMessage.includes('secure'))) {
-    return "Your data is protected through secure encryption and we follow privacy best practices. We don't store personal conversations and only process what's necessary to provide our services.";
-  }
-  
-  // Pidgin responses
-  if (lowerMessage.includes('pidgin') || lowerMessage.includes('speak pidgin')) {
-    return "Wetin you wan know? I fit help you with any question about ODIADEV and our voice AI services. Just ask me anything!";
-  }
-  
-  // Voice AI questions
-  if (lowerMessage.includes('voice') || lowerMessage.includes('audio') || lowerMessage.includes('speech')) {
-    return "I support voice interactions! Toggle the Voice mode to hear my responses. I can speak in different Nigerian personas - Ezinne (warm female), Lexi (bold female), ODIA (deep male), and Atlas (warm male).";
-  }
-  
-  // Technical questions
-  if (lowerMessage.includes('how') && lowerMessage.includes('work')) {
-    return "I use advanced AI to understand your messages and provide helpful responses. When voice is enabled, I convert my text responses to natural-sounding Nigerian speech using our TTS technology.";
-  }
-  
-  // Default responses
-  const responses = [
-    "That's interesting! Can you tell me more about what you're looking for?",
-    "I'm here to help with any questions about ODIADEV and our AI services. What would you like to know?",
-    "Great question! I can help you understand more about our voice AI solutions. What specific aspect interests you?",
-    "I'm Adaqua AI, your conversational assistant. How can I make your day better?",
-    "Thanks for reaching out! I'm here to help with information about ODIADEV's voice AI technology."
-  ];
-  
-  return responses[Math.floor(Math.random() * responses.length)];
-};
-
-// Chat endpoint
-app.post('/api/chat', (req, res) => {
-  try {
-    const { message } = req.body;
-    
-    if (!message || typeof message !== 'string') {
-      return res.status(400).json({ error: 'Message is required' });
-    }
-    
-    if (message.length > 5000) {
-      return res.status(400).json({ error: 'Message too long' });
-    }
-    
-    const reply = generateResponse(message);
-    
-    res.json({ reply });
-  } catch (error) {
-    console.error('Chat error:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-// Health check
+// Health check for Render
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', service: 'ODIADEV Brain' });
 });
 
-// Health check for Render
 app.get('/healthz', (req, res) => {
   res.json({ ok: true });
 });
 
-// Start server
-const HOST = '0.0.0.0';
-app.listen(PORT, HOST, () => {
-  const base = process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`;
-  console.log(`🧠 ODIADEV Brain listening on ${HOST}:${PORT}`);
-  console.log(`📡 Chat endpoint: ${base}/api/chat`);
+// Chat endpoint
+app.post('/api/chat', (req, res) => {
+  const { message } = req.body;
+  
+  if (!message) {
+    return res.status(400).json({ error: 'Message required' });
+  }
+  
+  // Simple response for now
+  const reply = `Hello! I'm Adaqua AI by ODIADEV. You said: "${message}". How can I help you today?`;
+  
+  res.json({ reply });
+});
+
+// Bind to all interfaces for Render
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🧠 ODIADEV Brain running on 0.0.0.0:${PORT}`);
 });
 
 export default app;

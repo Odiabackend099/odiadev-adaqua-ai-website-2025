@@ -1,52 +1,46 @@
-﻿{
-    "scripts":  {
-                    "smoke":  "node scripts/smoke.test.mjs",
-                    "preview":  "vite preview --port 5173",
-                    "build":  "vite build",
-                    "test:smoke":  "node scripts/smoke-mvp.mjs",
-                    "brain":  "node server/brain-secure.js",
-                    "format":  "prettier -w .",
-                    "test":  "vitest run",
-                    "build:backend":  "cd server \u0026\u0026 npm ci",
-                    "build:frontend":  "vite build",
-                    "frontend":  "vite",
-                    "start":  "node server/brain-secure.js",
-                    "dev":  "concurrently \"npm run brain\" \"npm run frontend\""
-                },
-    "overrides":  {
-                      "rollup":  "4.22.4"
-                  },
-    "type":  "module",
-    "version":  "1.0.0",
-    "engines":  {
-                    "node":  "\u003e=18.0.0"
-                },
-    "name":  "odiadev-site",
-    "private":  true,
-    "packageManager":  "npm@10.8.2",
-    "devDependencies":  {
-                            "@types/node":  "^24.3.1",
-                            "@types/react":  "^18.3.3",
-                            "@types/react-dom":  "^18.3.0",
-                            "@types/react-router-dom":  "^5.3.3",
-                            "@vitejs/plugin-react":  "^4.7.0",
-                            "autoprefixer":  "^10.4.20",
-                            "postcss":  "^8.4.47",
-                            "prettier":  "^3.3.3",
-                            "tailwindcss":  "^3.4.10",
-                            "typescript":  "^5.6.2",
-                            "vite":  "^5.4.19",
-                            "vitest":  "^3.2.4"
-                        },
-    "dependencies":  {
-                         "@supabase/supabase-js":  "^2.39.0",
-                         "concurrently":  "^9.2.1",
-                         "cors":  "^2.8.5",
-                         "express":  "^5.1.0",
-                         "express-rate-limit":  "^8.1.0",
-                         "groq-sdk":  "^0.32.0",
-                         "react":  "^18.3.1",
-                         "react-dom":  "^18.3.1",
-                         "react-router-dom":  "^6.20.1"
-                     }
+{
+    "scripts": {
+        "smoke": "node scripts/smoke.test.mjs",
+        "preview": "vite preview --port 5173",
+        "build": "vite build",
+        "test:smoke": "node scripts/smoke-mvp.mjs",
+        "brain": "node server/brain.js",
+        "format": "prettier -w .",
+        "test": "vitest run",
+        "build:backend": "cd server && npm ci",
+        "build:frontend": "vite build",
+        "frontend": "vite",
+        "start": "node server/brain.js",
+        "dev": "concurrently \"npm run brain\" \"npm run frontend\""
+    },
+    "type": "module",
+    "version": "1.0.0",
+    "name": "odiadev-site",
+    "private": true,
+    "packageManager": "npm@10.8.2",
+    "devDependencies": {
+        "@types/node": "^24.3.1",
+        "@types/react": "^18.3.3",
+        "@types/react-dom": "^18.3.0",
+        "@types/react-router-dom": "^5.3.3",
+        "@vitejs/plugin-react": "^4.7.0",
+        "autoprefixer": "^10.4.20",
+        "postcss": "^8.4.47",
+        "prettier": "^3.3.3",
+        "tailwindcss": "^3.4.10",
+        "typescript": "^5.6.2",
+        "vite": "^5.4.19",
+        "vitest": "^3.2.4"
+    },
+    "dependencies": {
+        "@supabase/supabase-js": "^2.39.0",
+        "concurrently": "^9.2.1",
+        "cors": "^2.8.5",
+        "express": "^5.1.0",
+        "express-rate-limit": "^8.1.0",
+        "groq-sdk": "^0.32.0",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1",
+        "react-router-dom": "^6.20.1"
+    }
 }
