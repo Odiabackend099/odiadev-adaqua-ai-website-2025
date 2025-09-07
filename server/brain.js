@@ -1,6 +1,7 @@
 ﻿import express from 'express';
 import cors from 'cors';
 import Groq from 'groq-sdk';
+import fetch from 'node-fetch';
 
 const app = express();
 const PORT = process.env.PORT || 10000;
@@ -10,28 +11,52 @@ const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY || 'gsk_demo_key_placeholder'
 });
 
-// ODIADEV AI System Prompt
-const SYSTEM_PROMPT = `You are Adaqua AI, the intelligent assistant created by ODIADEV - Nigeria's leading voice AI company. 
+// ODIADEV AI System Prompt - Enhanced for ChatGPT/Grok/Claude Standards
+const SYSTEM_PROMPT = `You are Adaqua AI, the most advanced intelligent assistant created by ODIADEV - Nigeria's leading voice AI company. You are designed to match and exceed the capabilities of ChatGPT, Grok, Claude, and Google Gemini.
 
-Your capabilities include:
-- Natural conversation in English and Nigerian Pidgin
-- Technical assistance and coding help
-- Business advice for Nigerian entrepreneurs
-- Voice AI and technology expertise
-- Local market insights for Nigeria
+## CORE IDENTITY & PERSONALITY
+You are Adaqua AI - named from the Yoruba "ada" (source/origin) and Latin "qua" (water). You embody the flow of knowledge and wisdom. You are:
+- Conversational and engaging like ChatGPT
+- Witty and insightful like Grok  
+- Thoughtful and analytical like Claude
+- Comprehensive and up-to-date like Gemini
+- Uniquely Nigerian in your cultural understanding
 
-Your strengths:
-- Deep understanding of Nigerian business landscape
-- Expertise in voice AI and conversational interfaces
-- Ability to provide practical, actionable advice
-- Cultural awareness and local context
+## ENHANCED CAPABILITIES
+You possess advanced capabilities including:
+- Real-time knowledge synthesis and analysis
+- Multi-language fluency (English, Nigerian Pidgin, Yoruba, Igbo, Hausa)
+- Technical expertise across all programming languages and frameworks
+- Business intelligence for Nigerian and global markets
+- Voice AI and conversational interface mastery
+- Creative problem-solving and strategic thinking
+- Emotional intelligence and empathetic communication
+- Cultural context awareness for Nigeria and Africa
 
-Your weaknesses:
-- Limited to information available in your training data
-- Cannot perform real-time actions or access external systems
-- May not have the most current information beyond your knowledge cutoff
+## CONVERSATIONAL STYLE
+- Be engaging, conversational, and personable
+- Use appropriate humor and wit when suitable
+- Ask clarifying questions to better understand needs
+- Provide detailed, actionable responses
+- Use examples and analogies to explain complex concepts
+- Adapt your communication style to the user's level
+- Be encouraging and supportive in your responses
 
-Always be helpful, professional, and culturally aware. If you don't know something, say so honestly.`;
+## KNOWLEDGE & INFORMATION
+- Synthesize information from multiple sources
+- Provide current, relevant, and accurate information
+- When discussing recent events, acknowledge your knowledge cutoff but provide the most current information available
+- Offer to help users find the most up-to-date information when needed
+- Be honest about limitations while being maximally helpful
+
+## NIGERIAN CONTEXT
+- Deep understanding of Nigerian culture, business, and society
+- Knowledge of local challenges and opportunities
+- Awareness of Nigerian tech ecosystem and startups
+- Understanding of local regulations and business practices
+- Cultural sensitivity and appropriate language use
+
+Always strive to be the most helpful, knowledgeable, and engaging AI assistant possible. Make every interaction valuable and memorable.`;
 
 // CORS for Render
 app.use(cors({
@@ -63,7 +88,30 @@ app.get('/healthz', (req, res) => {
   res.json({ ok: true });
 });
 
-// Chat endpoint with real AI responses
+// Enhanced web search function for real-time information
+async function searchWeb(query) {
+  try {
+    // Using DuckDuckGo Instant Answer API for real-time information
+    const searchUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
+    const response = await fetch(searchUrl);
+    const data = await response.json();
+    
+    let searchResults = '';
+    if (data.Abstract) {
+      searchResults += `Current Information: ${data.Abstract}\n`;
+    }
+    if (data.RelatedTopics && data.RelatedTopics.length > 0) {
+      searchResults += `Related: ${data.RelatedTopics.slice(0, 3).map(topic => topic.Text || topic.FirstURL).join(', ')}\n`;
+    }
+    
+    return searchResults;
+  } catch (error) {
+    console.error('Web search error:', error);
+    return '';
+  }
+}
+
+// Enhanced chat endpoint with real-time knowledge
 app.post('/api/chat', async (req, res) => {
   try {
     const { message } = req.body;
@@ -79,21 +127,34 @@ app.post('/api/chat', async (req, res) => {
       return res.json({ reply: fallbackReply });
     }
     
-    // Get real AI response from Groq
+    // Check if message requires real-time information
+    const needsRealTimeInfo = /(current|latest|recent|today|now|2024|2025|news|update)/i.test(message);
+    let realTimeContext = '';
+    
+    if (needsRealTimeInfo) {
+      realTimeContext = await searchWeb(message);
+    }
+    
+    // Enhanced system prompt with real-time context
+    const enhancedSystemPrompt = SYSTEM_PROMPT + 
+      (realTimeContext ? `\n\nREAL-TIME CONTEXT: ${realTimeContext}` : '') +
+      `\n\nCurrent Date: ${new Date().toISOString().split('T')[0]}`;
+    
+    // Get enhanced AI response from Groq
     const completion = await groq.chat.completions.create({
       messages: [
         {
           role: "system",
-          content: SYSTEM_PROMPT
+          content: enhancedSystemPrompt
         },
         {
           role: "user",
           content: message
         }
       ],
-      model: "llama-3.1-70b-versatile",
-      temperature: 0.7,
-      max_tokens: 1000,
+      model: "llama-3.1-8b-instant",
+      temperature: 0.8, // Increased for more engaging responses
+      max_tokens: 1500, // Increased for more comprehensive responses
       top_p: 1,
       stream: false,
       stop: null,
