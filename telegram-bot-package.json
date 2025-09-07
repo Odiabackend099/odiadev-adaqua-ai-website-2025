@@ -1,0 +1,36 @@
+{
+  "name": "odiadev-telegram-bot",
+  "version": "1.0.0",
+  "description": "ODIADEV Telegram Bot Integration - Connects Telegram to Adaqua AI Brain",
+  "main": "telegram-bot-integration.js",
+  "scripts": {
+    "start": "node telegram-bot-integration.js",
+    "dev": "nodemon telegram-bot-integration.js",
+    "test": "echo \"Bot integration ready for testing\""
+  },
+  "keywords": [
+    "telegram",
+    "bot",
+    "ai",
+    "odiadev",
+    "adaqua",
+    "nigeria"
+  ],
+  "author": "ODIADEV",
+  "license": "MIT",
+  "dependencies": {
+    "node-telegram-bot-api": "^0.64.0",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Odiabackend099/odiadev-adaqua-ai-website-2025.git"
+  },
+  "homepage": "https://odia.dev"
+}
