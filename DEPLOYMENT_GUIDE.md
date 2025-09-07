@@ -2,7 +2,7 @@
 
 ## 🚀 Quick Deployment Summary
 
-Your ODIADEV site is now **ready for deployment** with all critical fixes implemented:
+Your ODIADEV site is now **ready for full Render deployment** with all critical fixes implemented:
 
 ### ✅ **What's Fixed:**
 - ✅ Brain server binds to `0.0.0.0:$PORT` for Render
@@ -53,22 +53,22 @@ GROQ_API_KEY=your-groq-key-here
 - Render will automatically detect and use it
 - No manual configuration needed
 
-### 3. **Deploy Frontend to Vercel**
+### 3. **Deploy Frontend to Render (Static Site)**
 
 **Environment Variables:**
 ```
-VITE_SITE_URL=https://odia.dev
-VITE_AGENT_API_URL=https://odiadev-adaqua-ai-brain.onrender.com/api/chat
+VITE_SITE_URL=https://odiadev-frontend.onrender.com
+VITE_AGENT_API_URL=https://odiadev-brain.onrender.com/api/chat
 VITE_TTS_PROXY_URL=https://nyrvnskbkitrazudrkkc.supabase.co/functions/v1/tts
 VITE_SUPABASE_URL=https://nyrvnskbkitrazudrkkc.supabase.co
 VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55cnZuc2tia2l0cmF6dWRya2tjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY3NjAwNTQsImV4cCI6MjA3MjMzNjA1NH0.4OjZqbrvXrF3N0CNpzUndh9HTKCtXiadA6NRQv98fCg
-VITE_ALLOWED_ORIGINS=https://odia.dev,https://www.odia.dev,https://*.odia.dev,http://localhost:5173
 ```
 
-**Vercel Settings:**
+**Render Settings:**
+- **Environment:** Static Site
+- **Build Command:** `npm ci && npm run build`
+- **Publish Directory:** `dist`
 - **Node.js Version:** `20.x`
-- **Build Command:** `npm run build`
-- **Output Directory:** `dist`
 
 ### 4. **Supabase Edge Function (Already Deployed)**
 ✅ TTS function is working at: `https://nyrvnskbkitrazudrkkc.supabase.co/functions/v1/tts`
@@ -92,7 +92,7 @@ curl -X POST https://odiadev-adaqua-ai-brain.onrender.com/api/chat \
 ```
 
 ### Test Frontend:
-1. Visit `https://odia.dev`
+1. Visit `https://odiadev-frontend.onrender.com`
 2. Should see ODIADEV landing page with hero section
 3. Chat widget should be visible
 4. No console errors about missing Supabase env vars
@@ -151,10 +151,10 @@ curl -X POST https://nyrvnskbkitrazudrkkc.supabase.co/functions/v1/tts \
 ## 📞 **Support**
 
 If you encounter issues:
-1. Check Render logs for brain server
-2. Check Vercel logs for frontend
-3. Verify environment variables are set
-4. Test endpoints individually
-5. Check Supabase dashboard for function logs
+1. Check Render logs for both frontend and backend services
+2. Verify environment variables are set correctly
+3. Test endpoints individually
+4. Check Supabase dashboard for function logs
+5. Ensure CORS settings allow your Render domains
 
-**Your ODIADEV site is production-ready! 🎉**
+**Your ODIADEV site is production-ready on Render! 🎉**

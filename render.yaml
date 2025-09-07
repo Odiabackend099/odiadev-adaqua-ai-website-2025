@@ -1,5 +1,5 @@
 services:
-  # Frontend deployment (Vercel)
+  # Frontend deployment (Render Static Site)
   - type: web
     name: odiadev-frontend
     env: static
@@ -15,12 +15,13 @@ services:
       - key: VITE_TTS_PROXY_URL
         value: https://nyrvnskbkitrazudrkkc.supabase.co/functions/v1/tts
       - key: VITE_SITE_URL
-        value: https://odiadev.vercel.app
+        value: https://odiadev-frontend.onrender.com
 
   # Backend AI Brain deployment
   - type: web
     name: odiadev-brain
     env: node
+    rootDir: server
     buildCommand: npm ci
     startCommand: npm start
     envVars:
@@ -31,6 +32,6 @@ services:
           type: secret
           name: groq-api-key
       - key: ALLOWED_ORIGINS
-        value: https://odiadev.vercel.app,https://odia.dev,http://localhost:5173
+        value: https://odiadev-frontend.onrender.com,https://odia.dev,http://localhost:5173
       - key: RENDER_EXTERNAL_URL
         value: https://odiadev-brain.onrender.com
