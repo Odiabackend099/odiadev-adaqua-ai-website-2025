@@ -16,6 +16,8 @@
     "frontend": "vite",
     "brain": "node server/brain-secure.js",
     "build": "vite build",
+    "build:frontend": "vite build",
+    "build:backend": "cd server && npm ci",
     "preview": "vite preview --port 5173",
     "format": "prettier -w .",
     "test": "vitest run",

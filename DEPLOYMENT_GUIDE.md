@@ -42,10 +42,16 @@ GROQ_API_KEY=your-groq-key-here
 ```
 
 **Render Settings:**
-- **Build Command:** `npm ci && npm run build || npm run build:server || echo "no build step"`
-- **Start Command:** `node server/brain.js`
+- **Root Directory:** `server`
+- **Build Command:** `npm ci`
+- **Start Command:** `npm start`
 - **Health Check Path:** `/healthz`
 - **Region:** Oregon (US West)
+
+**Alternative: Use render.yaml**
+- The `render.yaml` file is already configured
+- Render will automatically detect and use it
+- No manual configuration needed
 
 ### 3. **Deploy Frontend to Vercel**
 

@@ -1,0 +1,19 @@
+{
+  "name": "odiadev-brain",
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": "20.x",
+    "npm": "10.x"
+  },
+  "scripts": {
+    "start": "node brain-secure.js",
+    "dev": "node brain-secure.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
+    "groq-sdk": "^0.32.0"
+  }
+}
